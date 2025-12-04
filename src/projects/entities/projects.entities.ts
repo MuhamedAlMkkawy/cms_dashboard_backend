@@ -1,17 +1,23 @@
 import { ObjectId } from "mongodb";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Projects {
-  @PrimaryGeneratedColumn()
-  id: ObjectId;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   icon : string
   
-  @Column()
-  title : string
+  @Column({ type: 'json' })
+  title : {
+    en : string,
+    ar : string
+  }
 
-  @Column()
-  description : string
+  @Column({ type: 'json' })
+  description : {
+    en : string,
+    ar : string
+  }
 }
