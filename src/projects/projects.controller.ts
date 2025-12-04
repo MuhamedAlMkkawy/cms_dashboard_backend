@@ -8,7 +8,6 @@ import { TransformFlatToNestedInterceptor } from 'src/interceptors/transformFlat
 import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.interceptor';
 import { plainToClass } from 'class-transformer';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
-import { ObjectId } from 'typeorm';
 
 @Controller('projects')
 @UseInterceptors(

@@ -5,6 +5,8 @@ import { ProjectsModule } from './projects/projects.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Projects } from './projects/entities/projects.entities';
 import { ConfigModule } from '@nestjs/config';
+import { PagesModule } from './pages/pages.module';
+import { Pages } from './pages/entities/pages.entities';
 
 @Module({
   imports: [
@@ -18,10 +20,12 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true, // only for development
       autoLoadEntities: true,
       entities: [
-        Projects
+        Projects,
+        Pages
       ],
     }),
-    ProjectsModule ,
+    ProjectsModule,
+    PagesModule ,
   ],
   controllers: [AppController],
   providers: [AppService],

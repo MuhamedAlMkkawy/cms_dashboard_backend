@@ -1,18 +1,29 @@
-import { IsOptional } from "class-validator"
+import { IsOptional, IsString, IsNotEmpty, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class LangObject {
+  @IsString()
+  @IsNotEmpty()
+  en: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ar: string;
+}
 
 export class UpdateProjectDto {
   @IsOptional()
-  icon : string
-  
+  @IsString()
+  @IsNotEmpty()
+  icon?: string;
+
   @IsOptional()
-  title : {
-    en : string,
-    ar : string
-  }
-  
+  @ValidateNested()
+  @Type(() => LangObject)
+  title?: LangObject;
+
   @IsOptional()
-  description : {
-    en : string,
-    ar : string
-  }
+  @ValidateNested()
+  @Type(() => LangObject)
+  description?: LangObject;
 }
