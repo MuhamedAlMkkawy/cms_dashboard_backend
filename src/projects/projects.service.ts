@@ -113,6 +113,26 @@ export class ProjectsService {
   }
 
 
+  // -------------------------------
+  // REMOVE PAGES FROM PROJECT
+  // -------------------------------
+  async removePagesFromProject(projectId: string, pageIds: string[]) {
+    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
+
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    const ids = pageIds.map(id => (id));
+
+    const pages = await this.pageRepo.find();
+    const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
+
+    return await this.projectsRepo.save({
+      ...project , 
+      pages : filteredPages
+    });
+  }
 
 
 

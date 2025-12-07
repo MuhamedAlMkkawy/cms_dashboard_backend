@@ -88,6 +88,17 @@ export class ProjectsController {
   }
 
 
+  // -------------------------------
+  // REMOVE PAGES FROM PROJECT
+  // -------------------------------
+  @Delete('/:id/pages')
+  async removePagesFromProject(@Param('id') id : string , @Body() body : any) {
+    const pageIds = body.pages; // <-- get the array
+
+    return this.projectsService.removePagesFromProject(id, pageIds)
+  }
+
+
 
   // -------------------------------
   // DELETE PROJECT

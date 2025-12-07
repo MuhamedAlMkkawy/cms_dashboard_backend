@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Pages } from "src/pages/entities/pages.entities";
-import { Column, Entity , ManyToMany, ObjectIdColumn } from "typeorm";
+import { Column, Entity , ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Projects {
