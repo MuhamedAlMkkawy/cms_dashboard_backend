@@ -8,6 +8,8 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { TransformFlatToNestedInterceptor } from 'src/interceptors/transformFlatToNested.interceptor';
 import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.interceptor';
+import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
+import { PageResponseDto } from './dtos/PageResponce.dto';
 
 @Controller('pages')
 @UseInterceptors(
@@ -30,6 +32,7 @@ import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.int
   TransformFlatToNestedInterceptor,
   MergeFileFieldsInterceptor
 )
+@Serialize(PageResponseDto)
 export class PagesController {
   constructor(
     private pagesService : PagesService
