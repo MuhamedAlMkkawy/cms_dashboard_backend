@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ObjectId } from "mongodb";
+import { Column, Entity, ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Pages {
-  @PrimaryGeneratedColumn()
-  _id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   title : {

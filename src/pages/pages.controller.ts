@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { PagesService } from './pages.service';
 import { plainToClass } from 'class-transformer';
 import { CreatePageDto } from './dtos/CreatePage.dto';
@@ -11,6 +11,22 @@ import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.int
 
 @Controller('pages')
 @UseInterceptors(
+  AnyFilesInterceptor({
+    storage: diskStorage({
+      destination: `./uploads`,
+      filename: (req, file, cb) => {
+        const uniqueSuffix =
+          Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + extname(file.originalname));
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+      }
+      cb(null, true);
+    },
+  }),
   TransformFlatToNestedInterceptor,
   MergeFileFieldsInterceptor
 )
@@ -29,7 +45,7 @@ export class PagesController {
 
 
   // GET Single Page
-  @Get(':id')
+  @Get('/:id')
   async getSinglePage(@Param('id') id : string) {
     return await this.pagesService.getSinglePage(id)
   }
@@ -38,15 +54,14 @@ export class PagesController {
 
   // Create Page
   @Post()
-  async createPage(@Body() page : any) {
-    console.log(page)
-    const validatedPage = plainToClass(CreatePageDto, page)
+  async createPage(@Body() body : any) {
+    const validatedPage = plainToClass(CreatePageDto, body)
     return await this.pagesService.createPage(validatedPage)
   }
 
 
   // Update Page
-  @Post(':id')
+  @Patch('/:id')
   async updatePage(@Param('id') id : string , @Body() page : any) {
     const validatedPage = plainToClass(CreatePageDto, page)
     return await this.pagesService.updatePage(id , validatedPage)

@@ -48,13 +48,14 @@ export class PagesService {
   // Create Page
   async createPage (page : CreatePageDto) {
     const newPage = this.repo.create(page)
-
     if(!newPage){
       throw new NotFoundException('No Page found')
     }
 
     return await this.repo.save(newPage)    
   }
+
+
 
 
   // Update Page
