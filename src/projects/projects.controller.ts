@@ -35,7 +35,9 @@ export class ProjectsController {
   constructor(private readonly projectsService : ProjectsService) {}
 
 
+  // -------------------------------
   // GET ALL PROJECTS
+  // -------------------------------
   @Get()
   async getAllProjects() {
     return this.projectsService.getAllProjects()
@@ -43,7 +45,9 @@ export class ProjectsController {
 
 
 
-  // GET PROJECT
+  // -------------------------------
+  // GET PROJECT WITH PAGES POPULATED
+  // -------------------------------
   @Get('/:id')
   async getProject(@Param('id') id : string) {
     return this.projectsService.getProject(id)
@@ -51,7 +55,9 @@ export class ProjectsController {
 
 
 
+  // -------------------------------
   // CREATE PROJECT
+  // -------------------------------
   @Post()
   async createProject(@Body() body : any) {
     const validatedBody = plainToClass(CreateProjectDto, body)
@@ -60,8 +66,9 @@ export class ProjectsController {
   }
 
 
-
+  // -------------------------------
   // UPDATE PROJECT
+  // -------------------------------
   @Patch('/:id')
   async updateProject(@Param('id') id : string , @Body() body : any) {
     const validatedBody = plainToClass(UpdateProjectDto, body)
@@ -69,7 +76,22 @@ export class ProjectsController {
   }
 
 
+
+  // -------------------------------
+  // ADD PAGES TO PROJECT
+  // -------------------------------
+  @Post('/:id/pages')
+  async addPagesToProject(@Param('id') id : string , @Body() body : any) {
+    const pageIds = body.pages; // <-- get the array
+
+    return this.projectsService.addPagesToProject(id, pageIds)
+  }
+
+
+
+  // -------------------------------
   // DELETE PROJECT
+  // -------------------------------
   @Delete('/:id')
   async deleteProject(@Param('id') id : string) {
     return this.projectsService.deleteProject(id)

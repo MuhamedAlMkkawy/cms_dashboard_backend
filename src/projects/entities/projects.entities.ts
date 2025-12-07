@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { Pages } from "src/pages/entities/pages.entities";
+import { Column, Entity , ManyToMany, ObjectIdColumn } from "typeorm";
 
 @Entity()
 export class Projects {
@@ -8,7 +9,7 @@ export class Projects {
 
   @Column()
   icon : string
-  
+
   @Column({ type: 'json' })
   title : {
     en : string,
@@ -20,4 +21,7 @@ export class Projects {
     en : string,
     ar : string
   }
+
+  @Column()
+  pages : Pages[]
 }

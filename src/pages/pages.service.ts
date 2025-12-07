@@ -4,6 +4,7 @@ import { Pages } from './entities/pages.entities';
 import { Repository } from 'typeorm';
 import { CreatePageDto } from './dtos/CreatePage.dto';
 import { merge } from 'lodash';
+import { UpdatePageDto } from './dtos/UpdatePage.dto';
 
 @Injectable()
 export class PagesService {
@@ -59,7 +60,7 @@ export class PagesService {
 
 
   // Update Page
-  async updatePage(id : string , page : CreatePageDto) {
+  async updatePage(id : string , page : UpdatePageDto) {
     const targetPage = await this.getSinglePage(id)
 
     if(!targetPage){

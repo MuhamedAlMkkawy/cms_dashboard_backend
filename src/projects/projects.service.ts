@@ -1,83 +1,136 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
+import { merge } from 'lodash';
 import { Projects } from './entities/projects.entities';
-import { Repository } from 'typeorm';
+import { Pages } from 'src/pages/entities/pages.entities';
 import { CreateProjectDto } from './dtos/CreateProject.dto';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
-import { merge } from 'lodash';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Projects)
     private readonly projectsRepo: Repository<Projects>,
+
+    @InjectRepository(Pages)
+    private readonly pageRepo: Repository<Pages>,
   ) {}
 
+
+
+
+  // -------------------------------
   // GET ALL PROJECTS
+  // -------------------------------
   async getAllProjects() {
-    const projects = await this.projectsRepo.find()
-    if(!projects){
-      throw new NotFoundException('No Projects found')
+    const projects = await this.projectsRepo.find();
+    if (!projects || projects.length === 0) {
+      throw new NotFoundException('No Projects found');
     }
-    return projects
+    return projects;
   }
 
 
 
-  // GET PROJECT
-  async getProject (id : string) {
+
+
+  // -------------------------------
+  // GET PROJECT WITH PAGES POPULATED
+  // -------------------------------
+  async getProject(id: string) {
     const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
-    
-    if(!project){
+
+    if (!project) {
       throw new NotFoundException('No Project found');
     }
 
-    return project;
+    return {
+      project
+    };
   }
 
 
 
-  
+
+  // -------------------------------
   // CREATE PROJECT
-  async createProject(project : CreateProjectDto) {
-    const newProject = this.projectsRepo.create(project)
-    if(!newProject){
-      throw new NotFoundException('No Project found')
-    }
-    return await this.projectsRepo.save(newProject)    
+  // -------------------------------
+  async createProject(project: CreateProjectDto) {
+    const newProject = this.projectsRepo.create({
+      ...project,
+      pages: [], // start empty
+    });
+
+    return await this.projectsRepo.save(newProject);
   }
 
 
 
+
+
+  // -------------------------------
   // UPDATE PROJECT
-  async updateProject(id : string , project : UpdateProjectDto) {
-    const targetProject = await this.getProject(id)
+  // -------------------------------
+  async updateProject(id: string, project: UpdateProjectDto) {
+    const existing = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
 
-    if(!targetProject){
-      throw new NotFoundException('No Project found')
+    if (!existing) {
+      throw new NotFoundException('No Project found');
     }
-    const updatedProject = merge({}, targetProject, project);
-    // Correct update syntax - update where _id matches, set the data
-    
-    const updated = await this.projectsRepo.save(updatedProject);
-    
-    return updated;
+
+    // Merge DTO into existing
+    const updatedProject = merge(existing, project);
+
+    // Save clean version (without populated pages)
+    return await this.projectsRepo.save(updatedProject);
   }
 
-  // DELETE PROJECT
-  async deleteProject(id : string) {
-    const project = await this.getProject(id)
 
-    if(!project){
-      throw new NotFoundException('No Project found')
+
+
+
+  // -------------------------------
+  // ADD PAGES TO PROJECT
+  // -------------------------------
+  async addPagesToProject(projectId: string, pageIds: string[]) {
+    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
+
+    if (!project) {
+      throw new NotFoundException('Project not found');
     }
 
-    await this.projectsRepo.remove(project)
+    const ids = pageIds.map(id => (id));
+
+    const pages = await this.pageRepo.find();
+    const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
+
+    return await this.projectsRepo.save({
+      ...project , 
+      pages : filteredPages
+    });
+  }
+
+
+
+
+
+  // -------------------------------
+  // DELETE PROJECT
+  // -------------------------------
+  async deleteProject(id: string) {
+    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
+
+    if (!project) {
+      throw new NotFoundException('No Project found');
+    }
+
+    await this.projectsRepo.remove(project);
 
     return {
-      message : 'Project deleted successfully',
-      data : null
-    } 
+      message: 'Project deleted successfully',
+      data: null,
+    };
   }
 }
