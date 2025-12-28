@@ -7,6 +7,12 @@ export class Pages {
   _id: ObjectId;
 
   @Column()
+  name : string
+
+  @Column()
+  project_id : number
+
+  @Column()
   title : {
     en : string;
     ar : string;
@@ -15,12 +21,9 @@ export class Pages {
   @Column()
   visibility : boolean;
 
+  @Column()
+  slug : string
 
   @Column()
-  classes : string[];
-
-
-  // @Column()
-  // sections : string[];
-
+  sections: any[];
 }

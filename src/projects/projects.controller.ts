@@ -1,11 +1,10 @@
+import { FlatToNestedWithFilesInterceptor } from '../interceptors/FlatToNestedWithFilesInterceptor.interceptor';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dtos/CreateProject.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { TransformFlatToNestedInterceptor } from 'src/interceptors/transformFlatToNested.interceptor';
-import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.interceptor';
 import { plainToClass } from 'class-transformer';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
 
@@ -21,14 +20,13 @@ import { UpdateProjectDto } from './dtos/UpdateProject.dto';
       },
     }),
     fileFilter: (req, file, cb) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|webp|svg\+xml)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
       cb(null, true);
     },
   }),
-  TransformFlatToNestedInterceptor,
-  MergeFileFieldsInterceptor
+  FlatToNestedWithFilesInterceptor
 )
 
 export class ProjectsController {

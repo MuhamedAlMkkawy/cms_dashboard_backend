@@ -6,10 +6,9 @@ import { UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { TransformFlatToNestedInterceptor } from 'src/interceptors/transformFlatToNested.interceptor';
-import { MergeFileFieldsInterceptor } from 'src/interceptors/mergeFileFields.interceptor';
 import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
 import { PageResponseDto } from './dtos/PageResponce.dto';
+import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedWithFilesInterceptor.interceptor';
 
 @Controller('pages')
 @UseInterceptors(
@@ -23,14 +22,13 @@ import { PageResponseDto } from './dtos/PageResponce.dto';
       },
     }),
     fileFilter: (req, file, cb) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|webp|svg\+xml)$/)) {
         return cb(new Error('Only image files are allowed!'), false);
       }
       cb(null, true);
     },
   }),
-  TransformFlatToNestedInterceptor,
-  MergeFileFieldsInterceptor
+  FlatToNestedWithFilesInterceptor
 )
 @Serialize(PageResponseDto)
 export class PagesController {

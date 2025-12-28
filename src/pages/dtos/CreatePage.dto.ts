@@ -1,4 +1,5 @@
-import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString, IsNumber, IsArray, ValidateNested, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
 
 class LangObject {
   @IsString()
@@ -10,18 +11,29 @@ class LangObject {
   ar: string;
 }
 
-
 export class CreatePageDto {
   @IsString()
   @IsNotEmpty()
-  title : LangObject;
+  name: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  project_id: number;
+
+  @ValidateNested()
+  @Type(() => LangObject)
+  @IsNotEmpty()
+  title: LangObject;
 
   @IsBoolean()
   @IsNotEmpty()
-  visibility : boolean;
+  visibility: boolean;
 
   @IsString()
   @IsNotEmpty()
-  classes : string[];
+  slug: string;
+
+  @IsArray()
+  @IsOptional()
+  sections: any[];
 }
-    

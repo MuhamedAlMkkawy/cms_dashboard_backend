@@ -7,6 +7,8 @@ import { Projects } from './projects/entities/projects.entities';
 import { ConfigModule } from '@nestjs/config';
 import { PagesModule } from './pages/pages.module';
 import { Pages } from './pages/entities/pages.entities';
+import { ComponentsModule } from './components/components.module';
+import { Components } from './components/entities/components.entities';
 
 @Module({
   imports: [
@@ -21,11 +23,13 @@ import { Pages } from './pages/entities/pages.entities';
       autoLoadEntities: true,
       entities: [
         Projects,
-        Pages
+        Pages,
+        Components
       ],
     }),
     ProjectsModule,
-    PagesModule ,
+    PagesModule,
+    ComponentsModule ,
   ],
   controllers: [AppController],
   providers: [AppService],
