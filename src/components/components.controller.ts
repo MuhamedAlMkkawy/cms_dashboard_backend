@@ -6,12 +6,14 @@ import { CreateComponentDto } from './dtos/CreateComponent.dto';
 import { plainToClass } from 'class-transformer';
 import { ComponentResponce } from './dtos/ComponentResponce.dto';
 import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
-import { UpdateComponentDto } from './dtos/UpdateComponent.dto';
 
 @Controller('components')
 @UseInterceptors(AnyFilesInterceptor(), FlatToNestedWithFilesInterceptor)
 export class ComponentsController {
   constructor(private ComponentsService: ComponentsService) {}
+
+
+
 
   // ------------------------------
   // GET ALL COMPONENTS
@@ -24,6 +26,9 @@ export class ComponentsController {
     return components;
   }
 
+
+
+
   // ------------------------------
   // GET SINGLE COMPONENT
   // ------------------------------
@@ -32,6 +37,8 @@ export class ComponentsController {
   async getSingleComponent(@Param('id') id: string) {
     return await this.ComponentsService.getSingleComponent(id);
   }
+
+
 
   // ------------------------------
   // CREATE NEW COMPONETNS
@@ -43,6 +50,8 @@ export class ComponentsController {
 
     return await this.ComponentsService.createComponent(validatedComponent);
   }
+
+
 
   // ------------------------------
   // UPDATE COMPONETNS
@@ -57,6 +66,8 @@ export class ComponentsController {
 
     return updatedComponent;
   }
+
+
 
   // ------------------------------
   // DELETE COMPONETNS
