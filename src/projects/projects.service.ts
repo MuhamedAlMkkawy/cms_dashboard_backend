@@ -46,9 +46,7 @@ export class ProjectsService {
       throw new NotFoundException('No Project found');
     }
 
-    return {
-      project
-    };
+    return project
   }
 
 
@@ -57,11 +55,8 @@ export class ProjectsService {
   // -------------------------------
   // CREATE PROJECT
   // -------------------------------
-  async createProject(project: CreateProjectDto) {
-    const newProject = this.projectsRepo.create({
-      ...project,
-      pages: [], // start empty
-    });
+  async createProject(data: any) {
+    const newProject = this.projectsRepo.create(data);
 
     return await this.projectsRepo.save(newProject);
   }
@@ -94,23 +89,26 @@ export class ProjectsService {
   // -------------------------------
   // ADD PAGES TO PROJECT
   // -------------------------------
-  async addPagesToProject(projectId: string, pageIds: string[]) {
-    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
+  // async addPagesToProject(projectId: string, newPage: string ) {
+  //   const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
 
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
+  //   if (!project) {
+  //     throw new NotFoundException('Project not found');
+  //   }
 
-    const ids = pageIds.map(id => (id));
+  //   // const ids = pageIds.map(id => (id));
+    
+  //   // const pages = await this.pageRepo.find();
+  //   // const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
 
-    const pages = await this.pageRepo.find();
-    const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
+  //     // Make sure pages array exists
+  //     const updatedPages = project.pages ? [...project.pages, newPage] : [newPage];
 
-    return await this.projectsRepo.save({
-      ...project , 
-      pages : filteredPages
-    });
-  }
+  //     // Save the updated project
+  //     project.pages = updatedPages; 
+
+  //     return await this.projectsRepo.save(project);
+  // }
 
 
   // -------------------------------

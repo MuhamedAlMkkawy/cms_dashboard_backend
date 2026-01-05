@@ -8,19 +8,19 @@ export class Projects {
   _id: ObjectId;
 
   @Column()
-  icon : string
+  logo : string
 
   @Column({ type: 'json' })
-  title : {
-    en : string,
-    ar : string
-  }
+  name : Record<string, string>;
 
   @Column({ type: 'json' })
-  description : {
-    en : string,
-    ar : string
-  }
+  description: Record<string, string>;
+
+  @Column()
+  visible : boolean
+
+  @Column()
+  languages : string[]
 
   @Column()
   pages : Pages[]

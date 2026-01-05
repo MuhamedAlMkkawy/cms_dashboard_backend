@@ -13,8 +13,11 @@ export class Components{
   label : string
 
   @Column()
-  icon : string;
+  icon : string
 
   @Column()
   visible : string
+
+  @Column({ type : 'json'})
+  content : Record<string , any>
 }

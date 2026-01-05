@@ -1,26 +1,33 @@
-import { IsString, IsNotEmpty, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-
-class LangObject {
-  @IsString()
-  @IsNotEmpty()
-  en: string;
-
-  @IsString()
-  @IsNotEmpty()
-  ar: string;
-}
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsObject,
+  IsOptional,
+} from 'class-validator';
+import { Pages } from 'src/pages/entities/pages.entities';
 
 export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
-  icon: string;
+  logo: string;
 
-  @ValidateNested()
-  @Type(() => LangObject)
-  title: LangObject;
+  @IsObject()
+  @IsNotEmpty()
+  name: Record<string, string>;
 
-  @ValidateNested()
-  @Type(() => LangObject)
-  description: LangObject;
+  @IsObject()
+  @IsNotEmpty()
+  description: Record<string, string>;
+
+  @IsString()
+  visible: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  languages: string[];
+
+  @IsArray()
+  @IsOptional()
+  pages?: Pages[]; // replace with PagesDto[] if you have one
 }

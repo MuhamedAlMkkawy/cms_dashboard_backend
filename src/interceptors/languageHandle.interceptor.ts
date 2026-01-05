@@ -12,55 +12,74 @@ export class LanguageInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
 
-    // Get language from query or header (no default now)
-    const lang =
-      request.query.lang?.toString().toLowerCase() ||
-      request.headers['accept-language']?.toString().toLowerCase() ||
-      '';
+    // Detect requested language
+    const rawLang =
+      request.query.lang || request.headers['accept-language'] || '';
+    const selectedLang = rawLang
+      .toString()
+      .toLowerCase()
+      .split(',')[0]
+      .split('-')[0];
 
-    // If it's a supported language
-    const selectedLang = ['ar', 'en'].includes(lang) ? lang : '';
-
+    // Recursive function to localize multilingual fields
     const localize = (obj: any): any => {
-      if (Array.isArray(obj)) {
-        return obj.map(localize);
-      }
+      if (Array.isArray(obj)) return obj.map(localize);
 
-      // Skip null, undefined, Date, ObjectId, or primitive values
       if (
         !obj ||
         typeof obj !== 'object' ||
         obj instanceof Date ||
-        (obj.constructor && obj.constructor.name === 'ObjectId')
+        obj.constructor?.name === 'ObjectId'
       ) {
         return obj;
       }
 
-      // If no language is selected → return full multilingual object
-      if (!selectedLang) return obj;
-
-      // If object has only { en, ar } → return selected language
-      const keys = Object.keys(obj);
-      if (keys.length === 2 && keys.includes('en') && keys.includes('ar')) {
-        return obj[selectedLang] ?? obj['en'];
-      }
-
-      // Otherwise, recursively process deeper fields
       const result: any = {};
+
       for (const [key, value] of Object.entries(obj)) {
+        // Skip _id
         if (key === '_id') {
-          result[key] = value; // Skip touching _id
+          result[key] = value;
+          continue;
+        }
+
+        // If value is an object and has dynamic languages
+        if (
+          value &&
+          typeof value === 'object' &&
+          Object.keys(value).every((k) => typeof value[k] === 'string')
+        ) {
+          // Check if requested language exists in object keys
+          if (selectedLang && value[selectedLang]) {
+            result[key] = value[selectedLang];
+          } else {
+            result[key] = value; // fallback: return full object
+          }
         } else {
+          // Otherwise, recurse
           result[key] = localize(value);
         }
       }
+
       return result;
     };
 
     return next.handle().pipe(
       map((response) => {
         if (!response) return response;
-        return localize(response);
+
+        // Handle `data` inside standard response structure
+        if (response.data) {
+          if (Array.isArray(response.data)) {
+            response.data = response.data.map(localize);
+          } else {
+            response.data = localize(response.data);
+          }
+        } else {
+          response = localize(response);
+        }
+
+        return response;
       }),
     );
   }
