@@ -2,7 +2,6 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
-  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { MenuContentDto } from './MenuDto.dto';
