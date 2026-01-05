@@ -34,7 +34,7 @@ export class Components {
 
   @Column()
   icon: string;
-  
+
   @Column()
   visible: string;
 
