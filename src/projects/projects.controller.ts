@@ -4,10 +4,12 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   NotFoundException,
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
@@ -17,6 +19,32 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { plainToClass } from 'class-transformer';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
+import { CreatePageDto } from 'src/pages/dtos/CreatePage.dto';
+import { CardSliderDto } from '../components/dtos/fields/CardSliderDto.dto';
+import { MenuContentDto } from '../components/dtos/fields/MenuDto.dto';
+import { CustomHtmlDto } from '../components/dtos/fields/CustomHtml.dto';
+import { LogoFieldsDto } from '../components/dtos/fields/LogoDto.dto';
+import { ButtonsFieldsDto } from '../components/dtos/fields/Buttons.dto';
+import { AccordionFieldsDto } from '../components/dtos/fields/Accordion.dto';
+import { TimelineFieldsDto } from '../components/dtos/fields/Timeline.dto';
+import { SocialMediaFieldsDto } from '../components/dtos/fields/SocialFields.dto';
+import { TabsFieldsDto } from '../components/dtos/fields/TabsDto.dto';
+import { validate } from 'class-validator';
+
+const componentDtoMap = {
+  'card-slider': CardSliderDto,
+  'nav-menu': MenuContentDto,
+  'custom-html': CustomHtmlDto,
+  'logo': LogoFieldsDto,
+  'buttons': ButtonsFieldsDto,
+  'accordion': AccordionFieldsDto,
+  'timeline' : TimelineFieldsDto,
+  'social-media': SocialMediaFieldsDto,
+  'tabs' : TabsFieldsDto,
+};
+
+
+
 
 @Controller('projects')
 @UseInterceptors(
@@ -77,24 +105,57 @@ export class ProjectsController {
     return this.projectsService.updateProject(id, validatedBody);
   }
 
-
-
-
   // -------------------------------
   // ADD PAGES TO PROJECT
   // -------------------------------
-    // @Post('/:id/pages')
-    // async addPagesToProject(@Param('id') id: string, @Body('page') body: string) {
-    //   // const pageIds = body.pages; // <-- get the array
-    //   if(!body){
-    //     throw new NotFoundException('No Data Found to added... ')
-    //   }
+  @Post('/:id/pages')
+  async addPagesToProject(
+    @Param('id') id: string,
+    @Query('pageId') pageId: string, // optional query param
+    @Body() body: any,
+    @Headers('accept-language') acceptLanguage: string,
+  ) {
+    if (!body) {
+      throw new NotFoundException('No Data Found to add...');
+    }
 
-    //   return this.projectsService.addPagesToProject(id, body)
-    // }
+    const validatedBody = plainToClass(CreatePageDto, body);
 
+    // Validate only new components
+    for (const section of validatedBody.sections) {
+      if (!section.components || !Array.isArray(section.components)) continue;
 
+      for (const component of section.components) {
+        if (component.id) continue; // skip existing components
 
+        const ComponentDto = componentDtoMap[component.type];
+        if (!ComponentDto) {
+          throw new NotFoundException(
+            `Unknown component type: ${component.type}`,
+          );
+        }
+
+        const validatedComponent = plainToClass(ComponentDto, component);
+        const errors = await validate(validatedComponent);
+
+        if (errors.length > 0) {
+          throw new NotFoundException(
+            `Invalid data for new component type: ${component.type}`,
+          );
+        }
+
+        Object.assign(component, validatedComponent);
+      }
+    }
+
+    // Call service
+    return this.projectsService.addPagesToProject(
+      id,
+      pageId,
+      validatedBody,
+      acceptLanguage,
+    );
+  }
 
   // -------------------------------
   // REMOVE PAGES FROM PROJECT

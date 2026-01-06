@@ -14,7 +14,7 @@ export class MenuChildDto {
   icon?: string;
 
   @IsString()
-  title: string;
+  title: Record<string , string>;
 
   @IsString()
   @IsOptional()
@@ -32,7 +32,7 @@ export class MenuItemDto {
   icon?: string;
 
   @IsString()
-  title: string;
+  title: Record<string , string>;
 
   @IsString()
   @IsOptional()

@@ -1,6 +1,5 @@
 import {
   IsString,
-  IsBoolean,
   IsArray,
   IsOptional,
   ValidateNested,
@@ -13,10 +12,10 @@ export class CardSliderItemDto {
   file?: string; // file path
 
   @IsString()
-  title?: string;
+  title?: Record<string , string>;
 
   @IsString()
-  text?: string;
+  text?: Record<string , string>;
 
   @IsString()
   link?: string;
@@ -26,11 +25,11 @@ export class CardSliderItemDto {
 export class CardSliderDto {
   @IsString()
   @IsOptional()
-  itemsToShow?: string; // can convert to number later if needed
+  itemsToShow?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  autoplay?: boolean;
+  autoplay?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

@@ -1,12 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { merge } from 'lodash';
 import { Projects } from './entities/projects.entities';
-import { Pages } from 'src/pages/entities/pages.entities';
-import { CreateProjectDto } from './dtos/CreateProject.dto';
+import { Pages, Section } from 'src/pages/entities/pages.entities';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
+import { Components } from 'src/components/entities/components.entities';
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 @Injectable()
 export class ProjectsService {
@@ -16,10 +19,10 @@ export class ProjectsService {
 
     @InjectRepository(Pages)
     private readonly pageRepo: Repository<Pages>,
+
+    @InjectRepository(Components)
+    private readonly componentsRepo: Repository<Components>,
   ) {}
-
-
-
 
   // -------------------------------
   // GET ALL PROJECTS
@@ -32,25 +35,20 @@ export class ProjectsService {
     return projects;
   }
 
-
-
-
-
   // -------------------------------
   // GET PROJECT WITH PAGES POPULATED
   // -------------------------------
   async getProject(id: string) {
-    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
+    const project = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(id),
+    });
 
     if (!project) {
       throw new NotFoundException('No Project found');
     }
 
-    return project
+    return project;
   }
-
-
-
 
   // -------------------------------
   // CREATE PROJECT
@@ -61,15 +59,13 @@ export class ProjectsService {
     return await this.projectsRepo.save(newProject);
   }
 
-
-
-
-
   // -------------------------------
   // UPDATE PROJECT
   // -------------------------------
   async updateProject(id: string, project: UpdateProjectDto) {
-    const existing = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
+    const existing = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(id),
+    });
 
     if (!existing) {
       throw new NotFoundException('No Project found');
@@ -85,60 +81,158 @@ export class ProjectsService {
 
 
 
-
   // -------------------------------
   // ADD PAGES TO PROJECT
   // -------------------------------
-  // async addPagesToProject(projectId: string, newPage: string ) {
-  //   const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
+  async addPagesToProject(
+    projectId: string,
+    pageId: string,
+    pageData: any,
+    acceptLanguage: string,
+  ) {
+    const project = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(projectId),
+    });
+    if (!project) throw new NotFoundException('Project not found');
 
-  //   if (!project) {
-  //     throw new NotFoundException('Project not found');
-  //   }
+    // Find existing page by pageId, if exists
+    let existingPage;
+    if (pageId) {
+      existingPage = await this.pageRepo.findOneBy({ pageId });
+    }
 
-  //   // const ids = pageIds.map(id => (id));
-    
-  //   // const pages = await this.pageRepo.find();
-  //   // const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
+    // If page exists, add/update language
+    if (existingPage) {
+      // Add/update name for this language
+      existingPage.name = existingPage.name || {};
+      existingPage.name[acceptLanguage] = pageData.name || 'Untitled Page';
 
-  //     // Make sure pages array exists
-  //     const updatedPages = project.pages ? [...project.pages, newPage] : [newPage];
+      // Update sections and components for this language
+      if (pageData.sections && Array.isArray(pageData.sections)) {
+        existingPage.sections = existingPage.sections || [];
 
-  //     // Save the updated project
-  //     project.pages = updatedPages; 
+        for (const secData of pageData.sections) {
+          // Find existing section by id or create new
+          let section = existingPage.sections.find(s => s.id === secData.id);
+          if (!section) {
+            section = {
+              id: secData.id,
+              name: {},
+              visible: secData.visible ?? true,
+              components: [],
+            };
+            existingPage.sections.push(section);
+          }
 
-  //     return await this.projectsRepo.save(project);
-  // }
+          // Set section name for this language
+          section.name = section.name || {};
+          section.name[acceptLanguage] = secData.name || 'Untitled Section';
+
+          // Process components
+          if (secData.components && Array.isArray(secData.components)) {
+            for (const compData of secData.components) {
+              // Check if component already exists in section (by type + optional id)
+              let component = section.components.find(c => c.type === compData.type && c._id?.toString() === compData._id);
+              if (!component) {
+                component = new Components();
+                component.type = compData.type;
+                component.icon = compData.icon || '';
+                component.visible = compData.visible || 'true';
+                component.content = compData.content || {};
+                component.label = {};
+                const savedComponent = await this.componentsRepo.save(component);
+                section.components.push(savedComponent);
+                component = savedComponent;
+              }
+
+              // Set label for this language
+              component.label = component.label || {};
+              component.label[acceptLanguage] = compData.label || '';
+            }
+          }
+        }
+      }
+
+      // Save updated page
+      const savedPage = await this.pageRepo.save(existingPage);
+      return savedPage;
+    }
+  // If page does not exist, create new
+    const newPage = new Pages();
+    newPage.pageId = pageId || uuidv4();
+    newPage.name = { [acceptLanguage]: pageData.name || 'Untitled Page' };
+    newPage.visible = pageData.visible || 'true';
+    newPage.sections = [];
+
+    if (pageData.sections && Array.isArray(pageData.sections)) {
+      for (const secData of pageData.sections) {
+        const section: Section = {
+          id: secData.id,
+          name: { [acceptLanguage]: secData.name || 'Untitled Section' },
+          visible: secData.visible ?? true,
+          components: [],
+        };
+
+        if (secData.components && Array.isArray(secData.components)) {
+          for (const compData of secData.components) {
+            const component = new Components();
+            component.type = compData.type;
+            component.label = { [acceptLanguage]: compData.label || '' };
+            component.icon = compData.icon || '';
+            component.visible = compData.visible || 'true';
+            component.content = compData.content || {};
+            const savedComponent = await this.componentsRepo.save(component);
+            section.components.push(savedComponent);
+          }
+        }
+
+        newPage.sections.push(section);
+      }
+    }
+
+    const savedPage = await this.pageRepo.save(newPage);
+
+    // Add page to project
+    project.pages = project.pages ? [...project.pages, savedPage] : [savedPage];
+    await this.projectsRepo.save(project);
+
+    return savedPage;
+  }
+
 
 
   // -------------------------------
   // REMOVE PAGES FROM PROJECT
   // -------------------------------
   async removePagesFromProject(projectId: string, pageIds: string[]) {
-    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(projectId) });
+    const project = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(projectId),
+    });
 
     if (!project) {
       throw new NotFoundException('Project not found');
     }
 
-    const ids = pageIds.map(id => (id));
+    const ids = pageIds.map((id) => id);
 
     const pages = await this.pageRepo.find();
-    const filteredPages = pages.filter((page) => ids.includes(page._id.toString()));
+    const filteredPages = pages.filter((page) =>
+      ids.includes(page._id.toString()),
+    );
 
     return await this.projectsRepo.save({
-      ...project , 
-      pages : filteredPages
+      ...project,
+      pages: filteredPages,
     });
   }
-
-
 
   // -------------------------------
   // DELETE PROJECT
   // -------------------------------
   async deleteProject(id: string) {
-    const project = await this.projectsRepo.findOneBy({ _id: new ObjectId(id) });
+    const project = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(id),
+    });
 
     if (!project) {
       throw new NotFoundException('No Project found');

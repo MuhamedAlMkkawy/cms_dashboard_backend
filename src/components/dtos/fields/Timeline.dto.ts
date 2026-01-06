@@ -18,10 +18,10 @@ export class TimelineItemDto {
   icon: string;
 
   @IsString()
-  title: string;
+  title: Record<string , string>;
 
   @IsString()
-  description: string;
+  description: Record<string , string>;
 
   @IsString()
   @IsOptional()

@@ -16,7 +16,7 @@ export class ButtonItemDto {
   icon?: string;
 
   @IsString()
-  title: string;
+  title: Record<string , string>;
 
   @IsString()
   @IsOptional()

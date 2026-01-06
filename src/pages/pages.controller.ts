@@ -61,12 +61,12 @@ export class PagesController {
   }
 
 
-  // Update Page
-  @Patch('/:id')
-  async updatePage(@Param('id') id : string , @Body() page : any) {
-    const validatedPage = plainToClass(CreatePageDto, page)
-    return await this.pagesService.updatePage(id , validatedPage)
-  }
+  // // Update Page
+  // @Patch('/:id')
+  // async updatePage(@Param('id') id : string , @Body() page : any) {
+  //   const validatedPage = plainToClass(CreatePageDto, page)
+  //   return await this.pagesService.updatePage(id , validatedPage)
+  // }
 
 
   // Delete Page

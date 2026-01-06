@@ -6,10 +6,10 @@ import { Type } from 'class-transformer';
  */
 export class AccordionItemDto {
   @IsString()
-  title: string;
+  title: Record<string , string>;
 
   @IsString()
-  content: string;
+  content: Record<string , string>;
 }
 
 /**

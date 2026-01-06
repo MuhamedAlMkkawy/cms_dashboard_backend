@@ -1,18 +1,14 @@
 import { Type } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { MenuContentDto } from './MenuDto.dto';
-import { CardSliderDto } from './CardSliderDto.dto';
-import { CustomHtmlDto } from './CustomHtml.dto';
-import { LogoFieldsDto } from './LogoDto.dto';
-import { ButtonsFieldsDto } from './Buttons.dto';
-import { AccordionFieldsDto } from './Accordion.dto';
-import { TimelineFieldsDto } from './Timeline.dto';
-import { SocialMediaFieldsDto } from './SocialFields.dto';
-import { TabsFieldsDto } from './TabsDto.dto';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { MenuContentDto } from './fields/MenuDto.dto';
+import { CardSliderDto } from './fields/CardSliderDto.dto';
+import { CustomHtmlDto } from './fields/CustomHtml.dto';
+import { LogoFieldsDto } from './fields/LogoDto.dto';
+import { ButtonsFieldsDto } from './fields/Buttons.dto';
+import { AccordionFieldsDto } from './fields/Accordion.dto';
+import { TimelineFieldsDto } from './fields/Timeline.dto';
+import { SocialMediaFieldsDto } from './fields/SocialFields.dto';
+import { TabsFieldsDto } from './fields/TabsDto.dto';
 
 export class CreateComponentDto {
   @IsString()

@@ -1,39 +1,41 @@
-import { IsBoolean, IsNotEmpty, IsString, IsNumber, IsArray, ValidateNested, IsOptional } from "class-validator";
-import { Type } from "class-transformer";
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
-class LangObject {
-  @IsString()
-  @IsNotEmpty()
-  en: string;
-
-  @IsString()
-  @IsNotEmpty()
-  ar: string;
-}
-
-export class CreatePageDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
+// Section DTO
+export class SectionDto {
   @IsNumber()
-  @IsNotEmpty()
-  project_id: number;
+  id: number;
 
-  @ValidateNested()
-  @Type(() => LangObject)
+  @IsObject()
   @IsNotEmpty()
-  title: LangObject;
+  name: Record<string, string>;
 
   @IsBoolean()
-  @IsNotEmpty()
-  visibility: boolean;
-
-  @IsString()
-  @IsNotEmpty()
-  slug: string;
+  visible: boolean;
 
   @IsArray()
-  @IsOptional()
-  sections: any[];
+  components: any[];
+}
+
+// Pages DTO
+export class CreatePageDto {
+  @IsObject()
+  @IsNotEmpty()
+  name: Record<string, string>;
+
+  @IsString()
+  visibility: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SectionDto)
+  sections: SectionDto[];
 }
