@@ -1,33 +1,65 @@
-import { Expose, Transform } from 'class-transformer';
-import { PageResponseDto } from 'src/pages/dtos/PageResponce.dto';
-// import { PagesResponseDto } from 'src/pages/dto/pages-response.dto';
+import { ComponentResponce } from '../../components/dtos/ComponentResponce.dto';
+import { Expose, Type, Transform } from 'class-transformer';
+
+export class SectionResponseDto {
+  @Expose()
+  id: string | number;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  @Transform(({ value }) => value === 'true' || value === true)
+  visible: boolean;
+
+  @Expose()
+  @Type(() => ComponentResponce)
+  components: ComponentResponce[];
+}
+
+export class PageResponseDto {
+  @Expose()
+  _id: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  @Transform(({ value }) => value === 'true' || value === true)
+  visible: boolean;
+
+  @Expose()
+  projectID: string;
+
+  @Expose()
+  language: string;
+
+  @Expose()
+  @Type(() => SectionResponseDto)
+  sections: SectionResponseDto[];
+}
 
 export class ProjectResponseDto {
   @Expose()
   _id: string;
-  
+
   @Expose()
   logo: string;
-  
+
   @Expose()
-  @Transform(({ value }) =>
-    typeof value === 'object' ? null : value,
-  )
-  
   name: string;
-  
-  @Expose()
-  @Transform(({ value }) =>
-    typeof value === 'object' ? null : value,
-  )
+
+  @Expose() 
   description: string;
-  
+
   @Expose()
+  @Transform(({ value }) => value === 'true' || value === true)
   visible: boolean;
-  
+
   @Expose()
   languages: string[];
-  
+
   @Expose()
-  pages: any[];
+  @Type(() => PageResponseDto)
+  pages: PageResponseDto[];
 }

@@ -33,6 +33,7 @@ import { SocialMediaFieldsDto } from '../components/dtos/fields/SocialFields.dto
 import { TabsFieldsDto } from '../components/dtos/fields/TabsDto.dto';
 import { validate } from 'class-validator';
 import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
+import { ProjectResponseDto } from './dtos/ProjectResponce.dto';
 
 const componentDtoMap = {
   'card-slider': CardSliderDto,
@@ -74,6 +75,7 @@ export class ProjectsController {
   // GET ALL PROJECTS
   // -------------------------------
   @Get()
+  // @Serialize(ProjectResponseDto)
   async getAllProjects(@Headers('accept-language') language: string) {
     if (!language) {
       throw new BadRequestException('The Language is Required....');
