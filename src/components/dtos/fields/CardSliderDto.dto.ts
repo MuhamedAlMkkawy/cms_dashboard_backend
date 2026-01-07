@@ -29,7 +29,7 @@ export class CardSliderDto {
 
   @IsString()
   @IsOptional()
-  autoplay?: boolean;
+  autoplay?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

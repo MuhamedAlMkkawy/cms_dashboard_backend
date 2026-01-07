@@ -32,7 +32,7 @@ export class CreatePageDto {
   name: string;
 
   @IsString()
-  visibility: string;
+  visible: string;
 
   @IsString()
   projectID:string;

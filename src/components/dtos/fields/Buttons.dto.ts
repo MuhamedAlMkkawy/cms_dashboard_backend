@@ -26,9 +26,9 @@ export class ButtonItemDto {
   @IsOptional()
   target?: '_self' | '_blank';
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  reversed?: boolean;
+  reversed?: string;
 }
 
 /**

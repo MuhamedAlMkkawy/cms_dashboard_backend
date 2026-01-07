@@ -45,12 +45,12 @@ export class MenuItemDto {
   @IsOptional()
   target?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
-  hasChilds?: boolean;
+  hasChilds?: string;
 
   /* 🔥 children REQUIRED only if hasChilds === true */
-  @ValidateIf((o) => o.hasChilds === true)
+  @ValidateIf((o) => o.hasChilds === 'true')
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => MenuChildDto)

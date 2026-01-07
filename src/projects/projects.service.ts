@@ -8,8 +8,6 @@ import { Pages, Section } from 'src/pages/entities/pages.entities';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
 import { Components } from 'src/components/entities/components.entities';
 
-
-
 @Injectable()
 export class ProjectsService {
   constructor(
@@ -122,20 +120,22 @@ export class ProjectsService {
 
     for (const secData of pageData.sections || []) {
       const section: Section = {
-        id: secData.id,
+        id: Math.ceil(Math.random()*10e6),
         name: secData.name || 'Untitled Section',
         visible: secData.visible ?? 'true',
         components: [],
       };
 
       for (const compData of secData.components || []) {
-        const component = this.componentsRepo.create({
+        // 1-> GET THE COMPONENT FROM THE COMPONENTS REPO
+        const targetComponent = await this.componentsRepo.findOneBy({
           type: compData.type,
-          label: compData.label || '',
-          icon: compData.icon || '',
-          visible: compData.visible || 'true',
+        });
+        const component = this.componentsRepo.create({
+          ...targetComponent,
           content: compData.content || {},
         });
+
         const savedComponent = await this.componentsRepo.save(component);
         section.components.push(savedComponent);
       }

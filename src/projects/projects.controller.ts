@@ -148,21 +148,21 @@ export class ProjectsController {
       if (!section.components || !Array.isArray(section.components)) continue;
 
       for (const component of section.components) {
-        if (component.id) continue; // skip existing components
-
+        
         const ComponentDto = componentDtoMap[component.type];
         if (!ComponentDto) {
           throw new NotFoundException(
             `Unknown component type: ${component.type}`,
           );
         }
-
-        const validatedComponent = plainToClass(ComponentDto, component);
+        
+        const validatedComponent = plainToClass(ComponentDto, component.content);
         const errors = await validate(validatedComponent);
+
 
         if (errors.length > 0) {
           throw new BadRequestException(
-            `Invalid data for new component type: ${component.type}`,
+            `Invalid data for component type: ${component.type}`,
           );
         }
 

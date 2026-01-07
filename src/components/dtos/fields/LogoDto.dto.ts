@@ -23,13 +23,13 @@ export class LogoFieldsDto {
   @Type(() => LogoImageDto)
   image: LogoImageDto;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  width?: number;
+  width?: string;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  height?: number;
+  height?: string;
 
   @IsString()
   @IsOptional()
