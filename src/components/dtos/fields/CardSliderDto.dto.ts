@@ -12,10 +12,10 @@ export class CardSliderItemDto {
   file?: string; // file path
 
   @IsString()
-  title?: Record<string , string>;
+  title?: string;
 
   @IsString()
-  text?: Record<string , string>;
+  text?: string;
 
   @IsString()
   link?: string;
@@ -25,11 +25,11 @@ export class CardSliderItemDto {
 export class CardSliderDto {
   @IsString()
   @IsOptional()
-  itemsToShow?: string;
+  itemsToShow?: number;
 
   @IsString()
   @IsOptional()
-  autoplay?: string;
+  autoplay?: boolean;
 
   @IsArray()
   @ValidateNested({ each: true })

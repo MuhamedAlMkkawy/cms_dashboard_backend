@@ -6,10 +6,10 @@ import { Type } from 'class-transformer';
  */
 export class TabItemDto {
   @IsString()
-  title: Record<string , string>;
+  title: string;
 
   @IsString()
-  description: Record<string , string>;
+  description: string;
 }
 
 /**

@@ -3,18 +3,17 @@ import { IsOptional, IsString } from "class-validator";
 export class UpdateComponentDto {
   @IsString()
   @IsOptional()
-  type : string
-  
-  
+  type: string;
+
   @IsString()
   @IsOptional()
-  label : string
-  
+  label: string;
+
   @IsString()
   @IsOptional()
-  icon : string 
-  
+  icon: string;
+
   @IsString()
   @IsOptional()
-  visible : string 
+  visible: string;
 }

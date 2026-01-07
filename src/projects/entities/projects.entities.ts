@@ -10,11 +10,11 @@ export class Projects {
   @Column()
   logo : string
 
-  @Column({ type: 'json' })
-  name : Record<string, string>;
+  @Column()
+  name : string;
 
-  @Column({ type: 'json' })
-  description: Record<string, string>;
+  @Column()
+  description: string;
 
   @Column()
   visible : string

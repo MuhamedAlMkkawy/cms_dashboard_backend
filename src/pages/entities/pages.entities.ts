@@ -5,7 +5,7 @@ import { Column, Entity, ObjectIdColumn } from "typeorm";
 
 export interface Section {
   id: number;
-  name: Record<string, string>;
+  name: string;
   visible: boolean; // changed to boolean for clarity
   components: Components[];
 }
@@ -16,15 +16,17 @@ export class Pages {
   @ObjectIdColumn()
   _id: ObjectId;
 
-  @Column()
-  pageId: string;
-
-  
   @Column({ type: 'json' })
-  name: Record<string, string>;
+  name: string[];
 
   @Column()
   visible: string;
+
+  @Column()
+  projectID : string;
+
+  @Column()
+  language: string;
 
   @Column({ type: 'json' })
   sections: Section[];

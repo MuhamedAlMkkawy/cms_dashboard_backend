@@ -30,7 +30,7 @@ export class Components {
   type: string;
 
   @Column()
-  label: Record<string , string>;
+  label: string;
 
   @Column()
   icon: string;

@@ -3,7 +3,7 @@ import { IsString, IsOptional } from 'class-validator';
 // Custom HTML component DTO
 export class CustomHtmlDto {
   @IsString()
-  html: Record<string , string>;
+  html: string;
 
   @IsString()
   @IsOptional()

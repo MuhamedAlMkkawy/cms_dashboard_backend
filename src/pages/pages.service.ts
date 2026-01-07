@@ -17,7 +17,7 @@ export class PagesService {
   async getAllPages() {
     const pages =  await this.repo.find();
 
-    if(!pages){
+    if(!pages.length){
       throw new NotFoundException('No pages found')
     }
 
@@ -28,11 +28,7 @@ export class PagesService {
 
   // GET Single Page
   async getSinglePage(id : string) {
-    const pages = await this.repo.find()
-
-    if(!pages){
-      throw new NotFoundException('No pages found')
-    }
+    const pages = await this.getAllPages()
 
     const page = pages.find((page) => page._id.toString() === id);
 

@@ -53,12 +53,12 @@ export class PagesController {
 
 
 
-  // Create Page
-  @Post()
-  async createPage(@Body() body : any) {
-    const validatedPage = plainToClass(CreatePageDto, body)
-    return await this.pagesService.createPage(validatedPage)
-  }
+  // // Create Page
+  // @Post()
+  // async createPage(@Body() body : any) {
+  //   const validatedPage = plainToClass(CreatePageDto, body)
+  //   return await this.pagesService.createPage(validatedPage)
+  // }
 
 
   // // Update Page

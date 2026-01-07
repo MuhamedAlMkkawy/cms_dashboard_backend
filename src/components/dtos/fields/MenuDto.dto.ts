@@ -4,17 +4,19 @@ import {
   IsArray,
   ValidateNested,
   IsBoolean,
+  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-// Child menu item
+/* ================= Child menu item ================= */
+
 export class MenuChildDto {
   @IsString()
   @IsOptional()
   icon?: string;
 
   @IsString()
-  title: Record<string , string>;
+  title: string;
 
   @IsString()
   @IsOptional()
@@ -22,17 +24,18 @@ export class MenuChildDto {
 
   @IsString()
   @IsOptional()
-  target?: string; // "_self" | "_blank" etc.
+  target?: string;
 }
 
-// Parent menu item
+/* ================= Parent menu item ================= */
+
 export class MenuItemDto {
   @IsString()
   @IsOptional()
   icon?: string;
 
   @IsString()
-  title: Record<string , string>;
+  title: string;
 
   @IsString()
   @IsOptional()
@@ -46,14 +49,16 @@ export class MenuItemDto {
   @IsOptional()
   hasChilds?: boolean;
 
+  /* 🔥 children REQUIRED only if hasChilds === true */
+  @ValidateIf((o) => o.hasChilds === true)
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => MenuChildDto)
-  @IsOptional()
-  children?: MenuChildDto[];
+  children: MenuChildDto[];
 }
 
-// The menu content DTO
+/* ================= Menu content ================= */
+
 export class MenuContentDto {
   @IsArray()
   @ValidateNested({ each: true })

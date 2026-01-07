@@ -16,7 +16,7 @@ export class SectionDto {
 
   @IsObject()
   @IsNotEmpty()
-  name: Record<string, string>;
+  name: string;
 
   @IsBoolean()
   visible: boolean;
@@ -29,10 +29,16 @@ export class SectionDto {
 export class CreatePageDto {
   @IsObject()
   @IsNotEmpty()
-  name: Record<string, string>;
+  name: string;
 
   @IsString()
   visibility: string;
+
+  @IsString()
+  projectID:string;
+
+  @IsString()
+  language: string;
 
   @IsArray()
   @ValidateNested({ each: true })

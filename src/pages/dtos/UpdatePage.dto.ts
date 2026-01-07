@@ -15,13 +15,16 @@ class OptionalLangObject {
 
 export class UpdatePageDto {
   @IsOptional()
-  @ValidateNested()
-  @Type(() => OptionalLangObject)
-  title?: OptionalLangObject;
+  title?: string;
 
   @IsOptional()
   @IsBoolean()
   visibility?: boolean;
+
+
+  @IsOptional()
+  @IsString()
+  language?: string;
 
   @IsOptional()
   @IsString({ each: true })

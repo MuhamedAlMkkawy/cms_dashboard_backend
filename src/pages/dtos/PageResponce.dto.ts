@@ -1,25 +1,46 @@
 import { Expose, Type } from 'class-transformer';
 import { ObjectId } from 'mongodb';
-
-class TitleDto {
-  @Expose()
-  en: string;
-
-  @Expose()
-  ar: string;
-}
+import { Components } from 'src/components/entities/components.entities';
 
 export class PageResponseDto {
-  @Expose()
-  _id: ObjectId;
+  /* ================= Page ================= */
 
   @Expose()
-  @Type(() => TitleDto)
-  title: TitleDto;
+  id: string;
 
   @Expose()
-  visibility: boolean;
+  name: string;
 
   @Expose()
-  classes: string[];
+  language: string;
+
+  @Expose()
+  projectID: string;
+
+  @Expose()
+  visible: boolean;
+
+  /* ================= Sections ================= */
+
+  @Expose()
+  @Type(() => SectionResponseDto)
+  sections: SectionResponseDto[];
+}
+
+/* ================= Sections DTO ================= */
+
+export class SectionResponseDto {
+  @Expose()
+  id: number;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  visible: boolean;
+
+  /* ================= Components ================= */
+
+  @Expose()
+  components: any[];
 }

@@ -14,17 +14,16 @@ export class CreateProjectDto {
 
   @IsObject()
   @IsNotEmpty()
-  name: Record<string, string>;
+  name: string;
 
   @IsObject()
   @IsNotEmpty()
-  description: Record<string, string>;
+  description: string;
 
   @IsString()
   visible: string;
 
   @IsArray()
-  @IsString({ each: true })
   languages: string[];
 
   @IsArray()

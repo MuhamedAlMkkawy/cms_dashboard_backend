@@ -1,5 +1,7 @@
+import { PageResponseDto } from '../pages/dtos/PageResponce.dto';
 import { FlatToNestedWithFilesInterceptor } from '../interceptors/FlatToNestedWithFilesInterceptor.interceptor';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -30,21 +32,19 @@ import { TimelineFieldsDto } from '../components/dtos/fields/Timeline.dto';
 import { SocialMediaFieldsDto } from '../components/dtos/fields/SocialFields.dto';
 import { TabsFieldsDto } from '../components/dtos/fields/TabsDto.dto';
 import { validate } from 'class-validator';
+import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
 
 const componentDtoMap = {
   'card-slider': CardSliderDto,
   'nav-menu': MenuContentDto,
   'custom-html': CustomHtmlDto,
-  'logo': LogoFieldsDto,
-  'buttons': ButtonsFieldsDto,
-  'accordion': AccordionFieldsDto,
-  'timeline' : TimelineFieldsDto,
+  logo: LogoFieldsDto,
+  buttons: ButtonsFieldsDto,
+  accordion: AccordionFieldsDto,
+  timeline: TimelineFieldsDto,
   'social-media': SocialMediaFieldsDto,
-  'tabs' : TabsFieldsDto,
+  tabs: TabsFieldsDto,
 };
-
-
-
 
 @Controller('projects')
 @UseInterceptors(
@@ -74,16 +74,27 @@ export class ProjectsController {
   // GET ALL PROJECTS
   // -------------------------------
   @Get()
-  async getAllProjects() {
-    return this.projectsService.getAllProjects();
+  async getAllProjects(@Headers('accept-language') language: string) {
+    if (!language) {
+      throw new BadRequestException('The Language is Required....');
+    }
+
+    return this.projectsService.getAllProjects(language);
   }
 
   // ----------------------------------
-  // GET PROJECT WITH PAGES POPULATED
+  // GET SINGLE PROJECT
   // ----------------------------------
   @Get('/:id')
-  async getProject(@Param('id') id: string) {
-    return this.projectsService.getProject(id);
+  async getProject(
+    @Param('id') id: string,
+    @Headers('accept-language') language: string,
+  ) {
+    if (!language) {
+      throw new BadRequestException('Language is required');
+    }
+
+    return this.projectsService.getProject(id, language);
   }
 
   // -------------------------------
@@ -100,29 +111,40 @@ export class ProjectsController {
   // UPDATE PROJECT
   // -------------------------------
   @Patch('/:id')
-  async updateProject(@Param('id') id: string, @Body() body: any) {
-    const validatedBody = plainToClass(UpdateProjectDto, body);
-    return this.projectsService.updateProject(id, validatedBody);
+  async updateProject(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Headers('accept-language') language: string,
+  ) {
+    if (!language) {
+      throw new BadRequestException('Language is required');
+    }
+
+    return this.projectsService.updateProject(id, body, language);
   }
 
   // -------------------------------
   // ADD PAGES TO PROJECT
   // -------------------------------
   @Post('/:id/pages')
+  // @Serialize(PageResponseDto)
   async addPagesToProject(
     @Param('id') id: string,
-    @Query('pageId') pageId: string, // optional query param
     @Body() body: any,
-    @Headers('accept-language') acceptLanguage: string,
+    @Headers('accept-language') language: string,
   ) {
     if (!body) {
       throw new NotFoundException('No Data Found to add...');
     }
 
+    if (!language) {
+      throw new BadRequestException('Language is Required....');
+    }
+
     const validatedBody = plainToClass(CreatePageDto, body);
 
     // Validate only new components
-    for (const section of validatedBody.sections) {
+    for (const section of validatedBody.sections || []) {
       if (!section.components || !Array.isArray(section.components)) continue;
 
       for (const component of section.components) {
@@ -139,7 +161,7 @@ export class ProjectsController {
         const errors = await validate(validatedComponent);
 
         if (errors.length > 0) {
-          throw new NotFoundException(
+          throw new BadRequestException(
             `Invalid data for new component type: ${component.type}`,
           );
         }
@@ -149,23 +171,44 @@ export class ProjectsController {
     }
 
     // Call service
-    return this.projectsService.addPagesToProject(
-      id,
+    return this.projectsService.addPagesToProject(id, validatedBody, language);
+  }
+
+  // -------------------------------
+  // UPDATE PAGES OF PROJECT
+  // -------------------------------
+  @Patch('/:projectId/pages/:pageId')
+  async updatePageNested(
+    @Param('projectId') projectId: string,
+    @Param('pageId') pageId: string,
+    @Body() body: any,
+    @Headers('accept-language') language: string,
+  ) {
+    if (!language) {
+      throw new BadRequestException('Language is required');
+    }
+
+    if(!body){
+      throw new BadRequestException('No data provided for update');
+    }
+
+    return this.projectsService.updatePageNested(
+      projectId,
       pageId,
-      validatedBody,
-      acceptLanguage,
+      language,
+      body,
     );
   }
 
   // -------------------------------
-  // REMOVE PAGES FROM PROJECT
+  // -----> TO DO <---- REMOVE PAGES FROM PROJECT
   // -------------------------------
-  @Delete('/:id/pages')
-  async removePagesFromProject(@Param('id') id: string, @Body() body: any) {
-    const pageIds = body.pages; // <-- get the array
+  // @Delete('/:id/pages')
+  // async removePagesFromProject(@Param('id') id: string, @Body() body: any) {
+  //   const pageIds = body.pages; // <-- get the array
 
-    return this.projectsService.removePagesFromProject(id, pageIds);
-  }
+  //   return this.projectsService.removePagesFromProject(id, pageIds);
+  // }
 
   // -------------------------------
   // DELETE PROJECT
