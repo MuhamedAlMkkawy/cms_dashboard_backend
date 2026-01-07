@@ -153,7 +153,13 @@ export class ProjectsService {
 
   // -------------------------------
   // UPDATE PAGES OF PROJECT
+  
+  // The function works on 3 levels depending on the payload:
+  // 1️⃣ Page level → no sectionId
+  // 2️⃣ Section level → sectionId is present but no componentId
+  // 3️⃣ Component level → sectionId + componentId are present
   // -------------------------------
+
   async updatePageNested(
     projectId: string,
     pageId: string,
