@@ -36,40 +36,29 @@ export class PagesController {
     private pagesService : PagesService
   ) {}
 
-
+  // -------------------
   // GET Pages
+  // -------------------
   @Get()
   async getAllPages() {
     return await this.pagesService.getAllPages()
   }
-
-
-
+  
+  
+  
+  // -------------------
   // GET Single Page
+  // -------------------
   @Get('/:id')
   async getSinglePage(@Param('id') id : string) {
     return await this.pagesService.getSinglePage(id)
   }
-
-
-
-  // // Create Page
-  // @Post()
-  // async createPage(@Body() body : any) {
-  //   const validatedPage = plainToClass(CreatePageDto, body)
-  //   return await this.pagesService.createPage(validatedPage)
-  // }
-
-
-  // // Update Page
-  // @Patch('/:id')
-  // async updatePage(@Param('id') id : string , @Body() page : any) {
-  //   const validatedPage = plainToClass(CreatePageDto, page)
-  //   return await this.pagesService.updatePage(id , validatedPage)
-  // }
-
-
+  
+  
+  
+  // -------------------
   // Delete Page
+  // -------------------
   @Delete(':id')
   async deletePage(@Param('id') id : string) {
     return await this.pagesService.deletePage(id)
