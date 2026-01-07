@@ -20,7 +20,7 @@ export class Pages {
   name: string[];
 
   @Column()
-  visible: string;
+  visible: boolean;
 
   @Column()
   projectID : string;

@@ -114,7 +114,7 @@ export class ProjectsService {
     const newPage = new Pages();
     newPage.projectID = new ObjectId(projectId).toString();
     newPage.name = pageData.name || 'Untitled Page';
-    newPage.visible = pageData.visible || 'true';
+    newPage.visible = pageData.visible == 'true' ? true : false;
     newPage.language = language;
     newPage.sections = [];
 
@@ -122,7 +122,7 @@ export class ProjectsService {
       const section: Section = {
         id: Math.ceil(Math.random()*10e6),
         name: secData.name || 'Untitled Section',
-        visible: secData.visible ?? 'true',
+        visible: secData.visible == 'true' ? true : false,
         components: [],
       };
 

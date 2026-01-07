@@ -17,7 +17,7 @@ export class Projects {
   description: string;
 
   @Column()
-  visible : string
+  visible : boolean
 
   @Column()
   languages : string[]
