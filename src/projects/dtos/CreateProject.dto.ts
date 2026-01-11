@@ -22,8 +22,8 @@ export class CreateProjectDto {
   // @IsString()
   // visible: string;
 
-  @IsArray()
-  languages: string[];
+  // @IsArray()
+  // languages: string[];
 
   @IsArray()
   @IsOptional()
