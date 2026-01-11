@@ -36,7 +36,7 @@ export class Components {
   icon: string;
 
   @Column()
-  visible: string;
+  visible: boolean;
 
   // Store any of the content DTOs as JSON
   @Column({ type: 'json' })

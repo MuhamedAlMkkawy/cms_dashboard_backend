@@ -103,10 +103,15 @@ export class ProjectsController {
   // CREATE PROJECT
   // -------------------------------
   @Post()
-  async createProject(@Body() body: any) {
-    const validatedBody = plainToClass(CreateProjectDto, body);
+  async createProject(@Body() body: CreateProjectDto) {
+    // const validatedBody = plainToClass(CreateProjectDto, body);
+    const project = {
+      ...body ,
+      visible : true ,
+      languages : ['ar' , 'en']
+    };
 
-    return this.projectsService.createProject(validatedBody);
+    return this.projectsService.createProject(project);
   }
 
   // -------------------------------

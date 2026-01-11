@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { MenuContentDto } from './fields/MenuDto.dto';
 import { CardSliderDto } from './fields/CardSliderDto.dto';
 import { CustomHtmlDto } from './fields/CustomHtml.dto';
@@ -23,9 +23,8 @@ export class CreateComponentDto {
   @IsNotEmpty()
   icon: string;
 
-  @IsString()
-  @IsNotEmpty()
-  visible: string;
+  @IsBoolean()
+  visible: boolean = true;
 
   // Single content property
   @ValidateNested()

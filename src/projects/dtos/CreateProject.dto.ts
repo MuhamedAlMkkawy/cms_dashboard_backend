@@ -8,7 +8,6 @@ import {
 import { Pages } from 'src/pages/entities/pages.entities';
 
 export class CreateProjectDto {
-  @IsString()
   @IsNotEmpty()
   logo: string;
 
@@ -20,8 +19,8 @@ export class CreateProjectDto {
   @IsNotEmpty()
   description: string;
 
-  @IsString()
-  visible: string;
+  // @IsString()
+  // visible: string;
 
   @IsArray()
   languages: string[];

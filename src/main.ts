@@ -39,6 +39,13 @@ async function bootstrap() {
   }));
   
 
+  app.enableCors({
+    origin: true,
+  });
+
+
+  
+
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   await app.listen(process.env.PORT ?? 3000);
 }

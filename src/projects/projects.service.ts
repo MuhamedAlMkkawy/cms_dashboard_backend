@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
@@ -7,6 +7,7 @@ import { Projects } from './entities/projects.entities';
 import { Pages, Section } from 'src/pages/entities/pages.entities';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
 import { Components } from 'src/components/entities/components.entities';
+import { CreateProjectDto } from './dtos/CreateProject.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -27,9 +28,9 @@ export class ProjectsService {
   async getAllProjects(language: string) {
     const projects = await this.projectsRepo.find();
 
-    if (!projects.length) {
-      throw new NotFoundException('No Projects Added Yet');
-    }
+    // if (!projects.length) {
+    //   throw new Error('No Projects Added Yet');
+    // }
 
     const projectsWithPages = await Promise.all(
       projects.map(async (project) => {
@@ -82,7 +83,6 @@ export class ProjectsService {
   // -------------------------------
   async createProject(data: any) {
     const newProject = this.projectsRepo.create(data);
-
     return await this.projectsRepo.save(newProject);
   }
 

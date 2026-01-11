@@ -24,7 +24,7 @@ export class ComponentsService {
   async getAllComponents() {
     const data = await this.componentsRepo.find();
 
-    if (!data[0]) throw new NotFoundException('No Components Found!!');
+    // if (!data[0]) throw new NotFoundException('No Components Found!!');
 
     return data;
   }
