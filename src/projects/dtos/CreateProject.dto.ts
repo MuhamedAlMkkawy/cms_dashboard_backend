@@ -1,5 +1,4 @@
 import {
-  IsString,
   IsNotEmpty,
   IsArray,
   IsObject,
@@ -27,5 +26,5 @@ export class CreateProjectDto {
 
   @IsArray()
   @IsOptional()
-  pages?: Pages[]; // replace with PagesDto[] if you have one
+  pages?: Pages[]; 
 }

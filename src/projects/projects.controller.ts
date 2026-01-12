@@ -148,7 +148,7 @@ export class ProjectsController {
       throw new BadRequestException('Language is Required....');
     }
 
-    const validatedBody = plainToClass(CreatePageDto, body);
+    const validatedBody = plainToClass(CreatePageDto, {projectID : id , ...body});
 
     // Validate only new components
     for (const section of validatedBody.sections || []) {
@@ -164,14 +164,15 @@ export class ProjectsController {
         }
         
         const validatedComponent = plainToClass(ComponentDto, component.content);
-        const errors = await validate(validatedComponent);
+        // const errors = await validate(validatedComponent);
 
 
-        if (errors.length > 0) {
-          throw new BadRequestException(
-            `Invalid data for component type: ${component.type}`,
-          );
-        }
+        // if (errors.length > 0) {
+        //   console.log(errors)
+        //   throw new BadRequestException(
+        //     `Invalid data for component type: ${component.type}`,
+        //   );
+        // }
 
         Object.assign(component, validatedComponent);
       }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
@@ -120,7 +120,7 @@ export class ProjectsService {
 
     for (const secData of pageData.sections || []) {
       const section: Section = {
-        id: Math.ceil(Math.random()*10e6),
+        id: Math.ceil(Math.random() * 10e6),
         name: secData.name || 'Untitled Section',
         visible: secData.visible == 'true' ? true : false,
         components: [],
@@ -158,58 +158,123 @@ export class ProjectsService {
   // 1️⃣ Page level → no sectionId
   // 2️⃣ Section level → sectionId is present but no componentId and payload.data changes in section
   // 3️⃣ Component level → sectionId + componentId are present and payload.data changes in component
-  // -------------------------------
+  // async updatePageNested(
+  //   projectId: string,
+  //   pageId: string,
+  //   language: string,
+  //   payload: any,
+  // ) {
+  //   const page = await this.pageRepo.findOne({
+  //     where: {
+  //       _id: new ObjectId(pageId),
+  //       projectID: new ObjectId(projectId).toString(),
+  //       language,
+  //     },
+  //   });
 
+  //   if (!page) {
+  //     throw new NotFoundException('Page not found');
+  //   }
+
+  //   /* ================= PAGE ================= */
+  //   if (!payload.sectionId) {
+  //     Object.assign(page, payload);
+  //     return this.pageRepo.save(page);
+  //   }
+
+  //   /* ================= SECTION ================= */
+  //   const section = page.sections.find(
+  //     (s) => String(s.id) === String(payload.sectionId),
+  //   );
+
+  //   if (!section) {
+  //     throw new NotFoundException('Section not found');
+  //   }
+
+  //   if (!payload.componentId) {
+  //     Object.assign(section, payload.data);
+  //     return this.pageRepo.save(page);
+  //   }
+
+  //   /* ================= COMPONENT ================= */
+  //   const component = section.components.find(
+  //     (c) => String(c._id) === String(payload.componentId),
+  //   );
+
+  //   if (!component) {
+  //     throw new NotFoundException('Component not found');
+  //   }
+
+  //   Object.assign(component, payload.data);
+
+  //   return this.pageRepo.save(page);
+  // }
+  // -------------------------------
   async updatePageNested(
     projectId: string,
     pageId: string,
     language: string,
-    payload: any,
+    pageData: any,
   ) {
-    const page = await this.pageRepo.findOne({
-      where: {
-        _id: new ObjectId(pageId),
-        projectID: new ObjectId(projectId).toString(),
-        language,
-      },
+    // 1️⃣ Find the project
+    const project = await this.projectsRepo.findOneBy({
+      _id: new ObjectId(projectId),
     });
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
 
-    if (!page) {
+    // 2️⃣ Find the page inside the project
+    const pageIndex = project.pages?.findIndex(
+      (p) => p._id.toString() === pageId,
+    );
+    if (pageIndex === undefined || pageIndex === -1) {
       throw new NotFoundException('Page not found');
     }
 
-    /* ================= PAGE ================= */
-    if (!payload.sectionId) {
-      Object.assign(page, payload);
-      return this.pageRepo.save(page);
+    // 3️⃣ Update page data
+    const existingPage = project.pages[pageIndex];
+
+    existingPage.name = pageData.name || existingPage.name || 'Untitled Page';
+    existingPage.visible = pageData.visible;
+    existingPage.language = language || existingPage.language;
+
+    // 4️⃣ Update sections
+    existingPage.sections = [];
+
+    for (const secData of pageData.sections || []) {
+      const section: Section = {
+        id: Math.ceil(Math.random() * 10e6),
+        name: secData.name || 'Untitled Section',
+        visible: secData.visible,
+        components: [],
+      };
+
+      for (const compData of secData.components || []) {
+        // Get the component template
+        const targetComponent = await this.componentsRepo.findOneBy({
+          type: compData.type,
+        });
+        const component = this.componentsRepo.create({
+          ...targetComponent,
+          content: compData.content || {},
+        });
+
+        const savedComponent = await this.componentsRepo.save(component);
+        section.components.push(savedComponent);
+      }
+
+      existingPage.sections.push(section);
     }
 
-    /* ================= SECTION ================= */
-    const section = page.sections.find(
-      (s) => String(s.id) === String(payload.sectionId),
-    );
+    // 5️⃣ Save the updated page
+    const savedPage = await this.pageRepo.save(existingPage);
 
-    if (!section) {
-      throw new NotFoundException('Section not found');
-    }
+    // 6️⃣ Update project pages array and save
+    project.pages[pageIndex] = savedPage;
+    await this.projectsRepo.save(project);
 
-    if (!payload.componentId) {
-      Object.assign(section, payload.data);
-      return this.pageRepo.save(page);
-    }
-
-    /* ================= COMPONENT ================= */
-    const component = section.components.find(
-      (c) => String(c._id) === String(payload.componentId),
-    );
-
-    if (!component) {
-      throw new NotFoundException('Component not found');
-    }
-
-    Object.assign(component, payload.data);
-
-    return this.pageRepo.save(page);
+    return savedPage;
   }
 
   // -------------------------------
