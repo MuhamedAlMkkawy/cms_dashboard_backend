@@ -9,6 +9,7 @@ import { PagesModule } from './pages/pages.module';
 import { Pages } from './pages/entities/pages.entities';
 import { ComponentsModule } from './components/components.module';
 import { Components } from './components/entities/components.entities';
+import { UploadsController } from './uploads/uploads.controller';
 
 @Module({
   imports: [
@@ -29,9 +30,9 @@ import { Components } from './components/entities/components.entities';
     }),
     ProjectsModule,
     PagesModule,
-    ComponentsModule ,
+    ComponentsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UploadsController],
   providers: [AppService],
 })
 export class AppModule {}

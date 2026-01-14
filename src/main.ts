@@ -16,13 +16,13 @@ const cookieSession = require('cookie-session')
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe(
-    {
-      transform : true , 
-      whitelist: true ,
-      forbidNonWhitelisted: true
-    }
-  ));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true, // THROWS error if extra keys exist
+    }),
+  );
 
   // Interceptor لتوحيد رسائل النجاح
   app.useGlobalInterceptors(new ResponseInterceptor());
