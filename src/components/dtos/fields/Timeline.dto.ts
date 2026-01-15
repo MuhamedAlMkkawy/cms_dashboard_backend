@@ -15,7 +15,7 @@ export class TimelineItemDto {
   date: string;
 
   @IsString()
-  icon: string;
+  icon?: string;
 
   @IsString()
   title: string;
