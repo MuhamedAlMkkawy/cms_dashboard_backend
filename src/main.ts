@@ -8,10 +8,7 @@ import { PermissionsGuard } from './guards/permissions.guard';
 import * as express from 'express';
 import { join } from 'path';
 
-
-
-const cookieSession = require('cookie-session')
-
+const cookieSession = require('cookie-session');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,21 +27,22 @@ async function bootstrap() {
   // To handle the responce depend on the language
   app.useGlobalInterceptors(new LanguageInterceptor());
 
-  // app.useGlobalGuards(new AuthGuard(), new PermissionsGuard());
+  app.useGlobalGuards(
+    new AuthGuard() ,
+    // new PermissionsGuard()
+  );
 
   // TO MAKE THE APP USE THE COOKIE SESSIONS
-  app.use(cookieSession({
-    keys : ['user_token'],
-    maxAge : 24 * 60 * 60 * 1000 // 1 day
-  }));
-  
+  app.use(
+    cookieSession({
+      keys: ['user_token'],
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    }),
+  );
 
   app.enableCors({
     origin: true,
   });
-
-
-  
 
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   await app.listen(process.env.PORT ?? 3000);
