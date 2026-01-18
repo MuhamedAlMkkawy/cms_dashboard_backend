@@ -10,6 +10,7 @@ import { Pages } from './pages/entities/pages.entities';
 import { ComponentsModule } from './components/components.module';
 import { Components } from './components/entities/components.entities';
 import { UploadsController } from './uploads/uploads.controller';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UploadsController } from './uploads/uploads.controller';
     ProjectsModule,
     PagesModule,
     ComponentsModule,
+    StatisticsModule,
   ],
   controllers: [AppController, UploadsController],
   providers: [AppService],

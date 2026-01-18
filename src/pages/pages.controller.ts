@@ -30,7 +30,7 @@ import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedW
   }),
   FlatToNestedWithFilesInterceptor
 )
-@Serialize(PageResponseDto)
+// @Serialize(PageResponseDto)
 export class PagesController {
   constructor(
     private pagesService : PagesService

@@ -10,5 +10,6 @@ import { ComponentsModule } from 'src/components/components.module';
   imports : [TypeOrmModule.forFeature([Projects]) , PagesModule , ComponentsModule],
   controllers: [ProjectsController],
   providers: [ProjectsService],
+  exports : [TypeOrmModule]
 })
 export class ProjectsModule {}
