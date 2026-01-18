@@ -11,6 +11,11 @@ import { ComponentsModule } from './components/components.module';
 import { Components } from './components/entities/components.entities';
 import { UploadsController } from './uploads/uploads.controller';
 import { StatisticsModule } from './statistics/statistics.module';
+import { UsersModule } from './users/users.module';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
+import { Users } from './users/entities/users.entities';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,15 +31,19 @@ import { StatisticsModule } from './statistics/statistics.module';
       entities: [
         Projects,
         Pages,
-        Components
+        Components,
+        Users
       ],
     }),
     ProjectsModule,
     PagesModule,
     ComponentsModule,
     StatisticsModule,
+    UsersModule,
+    AuthModule,
+    JwtModule
   ],
   controllers: [AppController, UploadsController],
-  providers: [AppService],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
