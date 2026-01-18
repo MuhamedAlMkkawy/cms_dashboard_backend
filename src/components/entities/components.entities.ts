@@ -10,16 +10,6 @@ import { TimelineFieldsDto } from '../dtos/fields/Timeline.dto';
 import { SocialMediaFieldsDto } from '../dtos/fields/SocialFields.dto';
 import { TabsFieldsDto } from '../dtos/fields/TabsDto.dto';
 
-export type ComponentContent =
-  | CardSliderDto
-  | MenuContentDto
-  | CustomHtmlDto
-  | LogoFieldsDto
-  | ButtonsFieldsDto
-  | AccordionFieldsDto
-  | TimelineFieldsDto
-  | SocialMediaFieldsDto
-  | TabsFieldsDto;
 
 @Entity()
 export class Components {
@@ -38,7 +28,7 @@ export class Components {
   @Column()
   visible: boolean;
 
-  // Store any of the content DTOs as JSON
-  @Column({ type: 'json' })
-  content: ComponentContent;
+  // // Store any of the content DTOs as JSON
+  // @Column({ type: 'json' })
+  // content: ComponentContent;
 }

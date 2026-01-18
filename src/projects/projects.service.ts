@@ -4,10 +4,12 @@ import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { merge } from 'lodash';
 import { Projects } from './entities/projects.entities';
-import { Pages, Section } from 'src/pages/entities/pages.entities';
+import { PageComponent, Pages, Section } from 'src/pages/entities/pages.entities';
 import { UpdateProjectDto } from './dtos/UpdateProject.dto';
 import { Components } from 'src/components/entities/components.entities';
 import { CreateProjectDto } from './dtos/CreateProject.dto';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class ProjectsService {
@@ -103,48 +105,62 @@ export class ProjectsService {
   // ADD PAGES TO PROJECT
   // -------------------------------
   async addPagesToProject(projectId: string, pageData: any, language: string) {
+    // 1️⃣ Find project
     const project = await this.projectsRepo.findOneBy({
       _id: new ObjectId(projectId),
     });
 
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
+    if (!project) throw new NotFoundException('Project not found');
 
+    // 2️⃣ Create new page
     const newPage = new Pages();
-    newPage.projectID = new ObjectId(projectId).toString();
+    newPage.projectID = projectId;
     newPage.name = pageData.name || 'Untitled Page';
-    newPage.visible = pageData.visible;
+    newPage.visible = pageData.visible ?? true;
     newPage.language = language;
     newPage.sections = [];
 
-    for (const secData of pageData.sections || []) {
+    // 3️⃣ Process sections
+    for (const [secIndex, secData] of (pageData.sections || []).entries()) {
       const section: Section = {
-        id: Math.ceil(Math.random() * 10e6),
+        id: Math.ceil(Math.random() * 1e7),
         name: secData.name || 'Untitled Section',
-        visible: secData.visible,
+        visible: secData.visible ?? true,
         components: [],
       };
 
-      for (const compData of secData.components || []) {
-        // 1-> GET THE COMPONENT FROM THE COMPONENTS REPO
+      // 4️⃣ Process components
+      for (const [compIndex, compData] of (
+        secData.components || []
+      ).entries()) {
         const targetComponent = await this.componentsRepo.findOneBy({
           type: compData.type,
         });
-        const component = this.componentsRepo.create({
-          ...targetComponent,
-          content: compData.content || {},
-        });
 
-        const savedComponent = await this.componentsRepo.save(component);
-        section.components.push(savedComponent);
+        if (!targetComponent)
+          throw new NotFoundException(
+            `Component type not found: ${compData.type}`,
+          );
+
+        const pageComponent: PageComponent = {
+          id: uuidv4(), // unique per page
+          componentId: targetComponent._id,
+          type: targetComponent.type,
+          visible: compData.visible ?? true,
+          order: compIndex,
+          content: compData.content || {}, // specific to this page
+        };
+
+        section.components.push(pageComponent);
       }
 
       newPage.sections.push(section);
     }
 
+    // 5️⃣ Save page
     const savedPage = await this.pageRepo.save(newPage);
 
+    // 6️⃣ Add page reference to project
     project.pages = project.pages ? [...project.pages, savedPage] : [savedPage];
     await this.projectsRepo.save(project);
 
@@ -220,48 +236,55 @@ export class ProjectsService {
     const project = await this.projectsRepo.findOneBy({
       _id: new ObjectId(projectId),
     });
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
+    if (!project) throw new NotFoundException('Project not found');
 
     // 2️⃣ Find the page inside the project
     const pageIndex = project.pages?.findIndex(
       (p) => p._id.toString() === pageId,
     );
-    if (pageIndex === undefined || pageIndex === -1) {
+    if (pageIndex === undefined || pageIndex === -1)
       throw new NotFoundException('Page not found');
-    }
 
-    // 3️⃣ Update page data
     const existingPage = project.pages[pageIndex];
 
+    // 3️⃣ Update basic page info
     existingPage.name = pageData.name || existingPage.name || 'Untitled Page';
-    existingPage.visible = pageData.visible;
+    existingPage.visible = pageData.visible ?? existingPage.visible;
     existingPage.language = language || existingPage.language;
 
     // 4️⃣ Update sections
     existingPage.sections = [];
 
-    for (const secData of pageData.sections || []) {
+    for (const [secIndex, secData] of (pageData.sections || []).entries()) {
       const section: Section = {
-        id: Math.ceil(Math.random() * 10e6),
+        id: Math.ceil(Math.random() * 1e7),
         name: secData.name || 'Untitled Section',
-        visible: secData.visible,
+        visible: secData.visible ?? true,
         components: [],
       };
 
-      for (const compData of secData.components || []) {
-        // Get the component template
+      for (const [compIndex, compData] of (
+        secData.components || []
+      ).entries()) {
         const targetComponent = await this.componentsRepo.findOneBy({
           type: compData.type,
         });
-        const component = this.componentsRepo.create({
-          ...targetComponent,
-          content: compData.content || {},
-        });
 
-        const savedComponent = await this.componentsRepo.save(component);
-        section.components.push(savedComponent);
+        if (!targetComponent)
+          throw new NotFoundException(
+            `Component type not found: ${compData.type}`,
+          );
+
+        const pageComponent: PageComponent = {
+          id: uuidv4(), // unique per page
+          componentId: targetComponent._id,
+          type: targetComponent.type,
+          visible: compData.visible ?? true,
+          order: compIndex,
+          content: compData.content || {},
+        };
+
+        section.components.push(pageComponent);
       }
 
       existingPage.sections.push(section);
