@@ -4,13 +4,13 @@ import { CanActivate, ForbiddenException, Injectable } from "@nestjs/common";
 export class AuthGuard implements CanActivate {
   canActivate(context: any): boolean {
     const request = context.switchToHttp().getRequest();
-
+  
     const openRoutes = ['/login', '/signup' , '/change_password'];
     if (openRoutes.some(route => request.path.startsWith(route))) {
       return true;
     }
 
 
-    return !!request.session.user_token;
+    return !!request.headers.authorization;
   }
 }

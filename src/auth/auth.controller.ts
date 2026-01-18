@@ -1,49 +1,52 @@
-import { Controller, Post, Body, UseInterceptors, Session, BadRequestException, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  BadRequestException,
+  Delete,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/CreateUserDto.dto';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { LoginDto } from './dtos/LoginDto.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedWithFilesInterceptor.interceptor';
 
 @Controller('/')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // ===================== SIGNUP =====================
   @Post('signup')
   @UseInterceptors(AnyFilesInterceptor())
-  async signup(@Body() body: CreateUserDto , @Session() session : any) {
-    if (session.user_token) {
+  async signup(@Body() body: CreateUserDto, @Req() req: any) {
+    if (req.user) {
       throw new BadRequestException('You are already logged in');
     }
-    return await this.authService.signup(body);
+
+    return this.authService.signup(body);
   }
 
+  // ===================== LOGIN =====================
   @Post('login')
   @UseInterceptors(FlatToNestedWithFilesInterceptor)
-  async login(@Body() body: LoginDto, @Session() session: any) {
-    if (session.user_token) {
+  async login(@Body() body: LoginDto, @Req() req: any) {
+    if (req.user) {
       throw new BadRequestException('You are already logged in');
     }
 
-    const user = await this.authService.login(body);
-
-    session.user_token = user.token;
-    session.role = user.role;
-
-    return user;
+    return this.authService.login(body);
   }
 
-  // [ 3 ] Logout
+  // ===================== LOGOUT =====================
   @Delete('logout')
-  async logout(@Session() session: any) {
-    if (!session.user_token) {
-      throw new BadRequestException('You are Already Logged Out')
-    }
-    
-    session.user_token = null;
+  async logout() {
+    // JWT logout is CLIENT-SIDE
     return {
-      message: 'You have logged out successfully!',
-      data: null,
+      message: 'Logged out successfully',
+      data : null
     };
   }
 }

@@ -27,10 +27,7 @@ async function bootstrap() {
   // To handle the responce depend on the language
   app.useGlobalInterceptors(new LanguageInterceptor());
 
-  app.useGlobalGuards(
-    new AuthGuard() ,
-    // new PermissionsGuard()
-  );
+  app.useGlobalGuards(app.get(AuthGuard));
 
   // TO MAKE THE APP USE THE COOKIE SESSIONS
   app.use(
