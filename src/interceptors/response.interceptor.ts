@@ -55,18 +55,25 @@ export class ResponseInterceptor implements NestInterceptor {
         }
 
         // If controller returned { message, data } → merge safely
-        if (data && typeof data === 'object' && 'message' in data && 'data' in data) {
+        if (
+          data &&
+          typeof data === 'object' &&
+          'message' in data &&
+          'data' in data
+        ) {
           return {
             status: 'success',
-            message: typeof data.message === 'object'
-              ? data.message[lang] || messages[lang]
-              : data.message,
+            message:
+              typeof data.message === 'object'
+                ? data.message[lang] || messages[lang]
+                : data.message,
             data: data.data ?? undefined,
           };
         }
 
         // Default fallback for single response values
         return {
+          statusCode: 200,
           status: 'success',
           message: messages[lang],
           data: data ?? undefined,
