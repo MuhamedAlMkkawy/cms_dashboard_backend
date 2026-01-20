@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   BadRequestException,
-  Delete,
   Req,
   UseInterceptors,
 } from '@nestjs/common';
@@ -41,12 +40,12 @@ export class AuthController {
   }
 
   // ===================== LOGOUT =====================
-  @Delete('logout')
+  @Post('logout')
   async logout() {
     // JWT logout is CLIENT-SIDE
     return {
       message: 'Logged out successfully',
-      data : null
+      data: null,
     };
   }
 }
