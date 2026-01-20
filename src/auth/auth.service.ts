@@ -50,13 +50,13 @@ export class AuthService {
     // [ 2 ] If the user is not Signed Up Before
     // ( 1 ) create salt
     const salt = randomBytes(32).toString('hex');
-    // ( 2 ) create salt
+    // ( 2 ) create hash
     const hash = (await scrypt(body.password, salt, 32)) as Buffer;
     // ( 3 ) encrypt the password
     const hashedPassword = salt + '.' + hash.toString('hex');
     // ( 4 ) Generate the token
     const generetedToken = this.jwtService.sign({ userEmail });
-    // ( 5 ) save the user 's data
+    // ( 5 ) save the user's data
     const userData = {
       ...body,
       token: generetedToken,
@@ -64,8 +64,13 @@ export class AuthService {
     };
 
     const savedUser = this.usersRepo.create(userData);
+    const result = await this.usersRepo.save(savedUser);
 
-    return await this.usersRepo.save(savedUser);
+    // Return success message with translation
+    return {
+      message: await this.i18n.translate('auth.authService.SIGNUP_SUCCESS'),
+      data: result,
+    };
   }
 
   // [ 2 ] Login
@@ -88,6 +93,37 @@ export class AuthService {
       );
     }
 
-    return user;
+    // Generate new token on login
+    const newToken = this.jwtService.sign({ email: user.email });
+
+    // Update user token
+    user.token = newToken;
+    await this.usersRepo.save(user);
+
+    // Return success message with translation
+    return {
+      message: await this.i18n.translate('auth.authService.LOGIN_SUCCESS'),
+      data: user,
+    };
+  }
+
+  // [ 3 ] Logout
+  async logout(req: any) {
+    if (!req.user) {
+      throw new BadRequestException(
+        await this.i18n.translate('auth.authService.NOT_LOGGED_IN'),
+      );
+    }
+
+    // Clear user token
+    const user = await this.usersService.getSingleUser(req.user.email);
+    // user.token = null;
+    await this.usersRepo.save(user);
+
+    // Return success message with translation
+    return {
+      message: await this.i18n.translate('auth.authService.LOGOUT_SUCCESS'),
+      data: null,
+    };
   }
 }

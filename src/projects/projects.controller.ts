@@ -34,6 +34,7 @@ import { TabsFieldsDto } from '../components/dtos/fields/TabsDto.dto';
 import { validate } from 'class-validator';
 import { Serialize } from 'src/interceptors/dataSerializor.interceptor';
 import { ProjectResponseDto } from './dtos/ProjectResponce.dto';
+import { I18nService } from 'nestjs-i18n';
 
 const componentDtoMap = {
   'card-slider': CardSliderDto,
@@ -69,16 +70,20 @@ const componentDtoMap = {
   FlatToNestedWithFilesInterceptor,
 )
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly i18n: I18nService,
+  ) {}
 
   // -------------------------------
   // GET ALL PROJECTS
   // -------------------------------
   @Get()
-  // @Serialize(ProjectResponseDto)
   async getAllProjects(@Headers('accept-language') language: string) {
     if (!language) {
-      throw new BadRequestException('The Language is Required....');
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED_GET'),
+      );
     }
 
     return this.projectsService.getAllProjects(language);
@@ -93,7 +98,9 @@ export class ProjectsController {
     @Headers('accept-language') language: string,
   ) {
     if (!language) {
-      throw new BadRequestException('Language is required');
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED'),
+      );
     }
 
     return this.projectsService.getProject(id, language);
@@ -104,11 +111,10 @@ export class ProjectsController {
   // -------------------------------
   @Post()
   async createProject(@Body() body: CreateProjectDto) {
-    // const validatedBody = plainToClass(CreateProjectDto, body);
     const project = {
-      ...body ,
-      visible : true ,
-      languages : ['ar' , 'en']
+      ...body,
+      visible: true,
+      languages: ['ar', 'en'],
     };
 
     return this.projectsService.createProject(project);
@@ -124,7 +130,9 @@ export class ProjectsController {
     @Headers('accept-language') language: string,
   ) {
     if (!language) {
-      throw new BadRequestException('Language is required');
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED'),
+      );
     }
 
     return this.projectsService.updateProject(id, body, language);
@@ -134,51 +142,52 @@ export class ProjectsController {
   // ADD PAGES TO PROJECT
   // -------------------------------
   @Post('/:id/pages')
-  // @Serialize(PageResponseDto)
   async addPagesToProject(
     @Param('id') id: string,
     @Body() body: any,
     @Headers('accept-language') language: string,
   ) {
     if (!body) {
-      throw new NotFoundException('No Data Found to add...');
+      throw new NotFoundException(
+        await this.i18n.translate('projects.controller.NO_DATA_TO_ADD'),
+      );
     }
 
     if (!language) {
-      throw new BadRequestException('Language is Required....');
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED_ADD'),
+      );
     }
 
-    const validatedBody = plainToClass(CreatePageDto, {projectID : id , ...body});
+    const validatedBody = plainToClass(CreatePageDto, {
+      projectID: id,
+      ...body,
+    });
 
-    // Validate only new components
     for (const section of validatedBody.sections || []) {
       if (!section.components || !Array.isArray(section.components)) continue;
 
       for (const component of section.components) {
-        
         const ComponentDto = componentDtoMap[component.type];
         if (!ComponentDto) {
           throw new NotFoundException(
-            `Unknown component type: ${component.type}`,
+            await this.i18n.translate(
+              'projects.controller.UNKNOWN_COMPONENT_TYPE',
+              {
+                args: { type: component.type },
+              },
+            ),
           );
         }
-        
-        const validatedComponent = plainToClass(ComponentDto, component.content);
-        // const errors = await validate(validatedComponent);
 
-
-        // if (errors.length > 0) {
-        //   console.log(errors)
-        //   throw new BadRequestException(
-        //     `Invalid data for component type: ${component.type}`,
-        //   );
-        // }
-
+        const validatedComponent = plainToClass(
+          ComponentDto,
+          component.content,
+        );
         Object.assign(component, validatedComponent);
       }
     }
 
-    // Call service
     return this.projectsService.addPagesToProject(id, validatedBody, language);
   }
 
@@ -193,11 +202,15 @@ export class ProjectsController {
     @Headers('accept-language') language: string,
   ) {
     if (!language) {
-      throw new BadRequestException('Language is required');
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED'),
+      );
     }
 
-    if(!body){
-      throw new BadRequestException('No data provided for update');
+    if (!body) {
+      throw new BadRequestException(
+        await this.i18n.translate('projects.controller.NO_DATA_PROVIDED'),
+      );
     }
 
     return this.projectsService.updatePageNested(
@@ -209,16 +222,6 @@ export class ProjectsController {
   }
 
   // -------------------------------
-  // -----> TO DO <---- REMOVE PAGES FROM PROJECT
-  // -------------------------------
-  // @Delete('/:id/pages')
-  // async removePagesFromProject(@Param('id') id: string, @Body() body: any) {
-  //   const pageIds = body.pages; // <-- get the array
-
-  //   return this.projectsService.removePagesFromProject(id, pageIds);
-  // }
-
-  // -------------------------------
   // DELETE PROJECT
   // -------------------------------
   @Delete('/:id')
@@ -226,3 +229,13 @@ export class ProjectsController {
     return this.projectsService.deleteProject(id);
   }
 }
+
+// -------------------------------
+// -----> TO DO <---- REMOVE PAGES FROM PROJECT
+// -------------------------------
+// @Delete('/:id/pages')
+// async removePagesFromProject(@Param('id') id: string, @Body() body: any) {
+//   const pageIds = body.pages; // <-- get the array
+
+//   return this.projectsService.removePagesFromProject(id, pageIds);
+// }

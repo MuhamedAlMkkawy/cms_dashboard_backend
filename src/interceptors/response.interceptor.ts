@@ -42,6 +42,7 @@ export class ResponseInterceptor implements NestInterceptor {
           const paginatedData = data.slice(start, end);
 
           return {
+            statusCode: 200,
             status: 'success',
             message: messages[lang],
             data: paginatedData,

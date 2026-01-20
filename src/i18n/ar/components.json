@@ -1,0 +1,8 @@
+{
+  "componentsService": {
+    "NO_COMPONENTS_FOUND": "لم يتم العثور على مكونات!",
+    "COMPONENT_NOT_FOUND": "المكون غير موجود",
+    "COMPONENT_TYPE_EXISTS": "نوع المكون موجود بالفعل!",
+    "COMPONENT_DELETED_SUCCESS": "تم حذف المكون بنجاح"
+  }
+}

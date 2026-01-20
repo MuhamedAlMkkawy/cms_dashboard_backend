@@ -1,0 +1,22 @@
+{
+  "fileUpload": {
+    "FILE_NOT_UPLOADED": "Logo isn't Uploaded",
+    "INVALID_FILE_TYPE": "Only image files are allowed!"
+  },
+  "controller": {
+    "LANGUAGE_REQUIRED": "Language is required",
+    "LANGUAGE_REQUIRED_GET": "The Language is Required....",
+    "LANGUAGE_REQUIRED_ADD": "Language is Required....",
+    "NO_DATA_TO_ADD": "No Data Found to add...",
+    "NO_DATA_PROVIDED": "No data provided for update",
+    "UNKNOWN_COMPONENT_TYPE": "Unknown component type: {type}"
+  },
+  "service": {
+    "PROJECT_NOT_FOUND": "Project not found",
+    "PAGE_NOT_FOUND": "Page not found",
+    "COMPONENT_TYPE_NOT_FOUND": "Component type not found: {type}",
+    "UNTITLED_PAGE": "Untitled Page",
+    "UNTITLED_SECTION": "Untitled Section",
+    "PROJECT_DELETED_SUCCESS": "Project deleted successfully"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "pagesService": {
+    "NO_PAGES_FOUND": "لم يتم العثور على صفحات",
+    "PAGE_NOT_FOUND": "الصفحة غير موجودة",
+    "PAGE_DELETED_SUCCESS": "تم حذف الصفحة بنجاح"
+  }
+}

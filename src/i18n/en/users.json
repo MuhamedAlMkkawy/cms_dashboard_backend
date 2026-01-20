@@ -1,0 +1,9 @@
+{
+  "controller": {
+    "EMAIL_REQUIRED": "You should include the email of the user you're looking for"
+  },
+  "service": {
+    "NO_USERS_FOUND": "No users found",
+    "NO_ACCOUNT_FOUND": "You don't have an account"
+  }
+}

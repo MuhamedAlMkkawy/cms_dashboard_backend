@@ -1,5 +1,5 @@
 // app.module.ts
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProjectsModule } from './projects/projects.module';
@@ -24,6 +24,7 @@ import {
   HeaderResolver,
   QueryResolver,
   AcceptLanguageResolver,
+  I18nMiddleware,
 } from 'nestjs-i18n';
 import { join } from 'path';
 
@@ -69,4 +70,8 @@ import { join } from 'path';
   controllers: [AppController, UploadsController],
   providers: [AppService, AuthService, AuthGuard],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(I18nMiddleware).forRoutes('*');
+  }
+}

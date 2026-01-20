@@ -1,0 +1,7 @@
+{
+  "pagesService": {
+    "NO_PAGES_FOUND": "No pages found",
+    "PAGE_NOT_FOUND": "Page not found",
+    "PAGE_DELETED_SUCCESS": "Page deleted successfully"
+  }
+}

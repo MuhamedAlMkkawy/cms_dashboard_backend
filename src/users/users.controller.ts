@@ -1,11 +1,13 @@
-import { Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { plainToClass } from 'class-transformer';
-import { CreateUserDto } from 'src/auth/dtos/CreateUserDto.dto';
+import { I18nService } from 'nestjs-i18n';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private readonly i18n: I18nService,
+  ) {}
 
   // GET ALL USERS
   @Get()
@@ -16,20 +18,11 @@ export class UsersController {
   // GET SINGLE USER
   @Get('/single')
   async getSingleUser(@Body('email') email: string) {
-    if(!email){
-      throw new NotFoundException('You Should Include the email of the user You Looking for...!!')
+    if (!email) {
+      throw new NotFoundException(
+        await this.i18n.translate('users.controller.EMAIL_REQUIRED'),
+      );
     }
     return await this.usersService.getSingleUser(email);
   }
-
-  
-  // CREATE NEW USER
-  // @Post()
-  // async createNewUser(@Body() body : any){
-  //   const validatedData = plainToClass(CreateUserDto , body)
-
-  //   return await this.usersService.createNewUser(validatedData)
-  // }
-  // UPDATE USER
-  // DELETE USER
 }

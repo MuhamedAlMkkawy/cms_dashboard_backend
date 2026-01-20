@@ -1,8 +1,0 @@
-{
-  "authService": {
-    "USER_ALREADY_EXISTS": "User already exists",
-    "INVALID_CREDENTIALS": "Email or password is incorrect",
-    "ALREADY_LOGGED_IN": "You are already logged in",
-    "LOGOUT_SUCCESS": "Logged out successfully"
-  }
-}

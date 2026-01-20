@@ -1,0 +1,8 @@
+{
+  "componentsService": {
+    "NO_COMPONENTS_FOUND": "No components found!",
+    "COMPONENT_NOT_FOUND": "Component not found",
+    "COMPONENT_TYPE_EXISTS": "This component type already exists!",
+    "COMPONENT_DELETED_SUCCESS": "Component deleted successfully"
+  }
+}

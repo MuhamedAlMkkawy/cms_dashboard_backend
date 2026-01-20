@@ -1,0 +1,22 @@
+{
+  "fileUpload": {
+    "FILE_NOT_UPLOADED": "لم يتم تحميل الشعار",
+    "INVALID_FILE_TYPE": "يُسمح فقط بملفات الصور!"
+  },
+  "controller": {
+    "LANGUAGE_REQUIRED": "اللغة مطلوبة",
+    "LANGUAGE_REQUIRED_GET": "اللغة مطلوبة....",
+    "LANGUAGE_REQUIRED_ADD": "اللغة مطلوبة....",
+    "NO_DATA_TO_ADD": "لم يتم العثور على بيانات للإضافة...",
+    "NO_DATA_PROVIDED": "لم يتم تقديم بيانات للتحديث",
+    "UNKNOWN_COMPONENT_TYPE": "نوع المكون غير معروف: {type}"
+  },
+  "service": {
+    "PROJECT_NOT_FOUND": "المشروع غير موجود",
+    "PAGE_NOT_FOUND": "الصفحة غير موجودة",
+    "COMPONENT_TYPE_NOT_FOUND": "نوع المكون غير موجود: {type}",
+    "UNTITLED_PAGE": "صفحة بدون عنوان",
+    "UNTITLED_SECTION": "قسم بدون عنوان",
+    "PROJECT_DELETED_SUCCESS": "تم حذف المشروع بنجاح"
+  }
+}
