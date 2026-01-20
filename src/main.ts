@@ -30,7 +30,6 @@ async function bootstrap() {
   app.useGlobalGuards(app.get(AuthGuard));
   // app.useGlobalGuards(new AuthGuard())
 
-
   // TO MAKE THE APP USE THE COOKIE SESSIONS
   app.use(
     cookieSession({
@@ -42,6 +41,17 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
   });
+
+  // Disable ETag generation
+  app.getHttpAdapter().getInstance().disable('etag');
+
+  // Set cache control globally
+  // app.use((req, res, next) => {
+  //   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  //   res.setHeader('Pragma', 'no-cache');
+  //   res.setHeader('Expires', '0');
+  //   next();
+  // });
 
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   await app.listen(process.env.PORT ?? 3000);

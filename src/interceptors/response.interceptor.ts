@@ -11,6 +11,19 @@ import { map } from 'rxjs/operators';
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse();
+
+    // Disable caching headers
+    response.removeHeader('ETag');
+    response.removeHeader('Last-Modified');
+
+    // Set cache control to prevent 304
+    response.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.setHeader('Pragma', 'no-cache');
+    response.setHeader('Expires', '0');
+
+    // Force status to 200
+    response.status(200);
 
     // Detect language from header (default to 'en')
     const langHeader = request.headers['accept-language'] || 'en';
@@ -63,6 +76,7 @@ export class ResponseInterceptor implements NestInterceptor {
           'data' in data
         ) {
           return {
+            statusCode: 200,
             status: 'success',
             message:
               typeof data.message === 'object'
