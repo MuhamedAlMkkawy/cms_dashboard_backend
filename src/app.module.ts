@@ -1,3 +1,4 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,37 +18,53 @@ import { AuthModule } from './auth/auth.module';
 import { Users } from './users/entities/users.entities';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from './guards/auth.guard';
-import { I18nModule, I18nJsonLoader } from 'nestjs-i18n';
+import {
+  I18nModule,
+  I18nJsonLoader,
+  HeaderResolver,
+  QueryResolver,
+  AcceptLanguageResolver,
+} from 'nestjs-i18n';
 import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Makes ConfigModule available globally
+      isGlobal: true,
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.MONGO_URL,
-      synchronize: true, // only for development
+      synchronize: true,
       autoLoadEntities: true,
       entities: [Projects, Pages, Components, Users],
     }),
+
+    // I18n Module - SIMPLIFIED VERSION
     I18nModule.forRoot({
       fallbackLanguage: 'en',
-      loader: I18nJsonLoader,
       loaderOptions: {
-        path: join(__dirname, '/locales/'),
+        path: join(process.cwd(), 'src/i18n/'),
         watch: true,
       },
+      resolvers: [
+        new QueryResolver(['lang', 'l']),
+        new AcceptLanguageResolver(),
+        new HeaderResolver(['x-custom-lang']),
+      ],
     }),
+
     ProjectsModule,
     PagesModule,
     ComponentsModule,
     StatisticsModule,
     UsersModule,
     AuthModule,
-    JwtModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60m' },
+    }),
   ],
   controllers: [AppController, UploadsController],
   providers: [AppService, AuthService, AuthGuard],

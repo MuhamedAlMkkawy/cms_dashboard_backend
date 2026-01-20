@@ -68,6 +68,18 @@ export class LanguageInterceptor implements NestInterceptor {
       map((response) => {
         if (!response) return response;
 
+        // ADD THIS: Skip i18n responses
+        // If response has a 'message' field that looks like i18n result
+        if (response.message && typeof response.message === 'string') {
+          // If it's already a translated string, don't process it
+          return response;
+        }
+
+        // Also skip if it's a standard i18n/AuthService response structure
+        if (response.status && response.message) {
+          return response;
+        }
+
         // Handle `data` inside standard response structure
         if (response.data) {
           if (Array.isArray(response.data)) {

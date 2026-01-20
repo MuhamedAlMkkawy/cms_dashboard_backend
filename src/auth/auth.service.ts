@@ -31,7 +31,7 @@ export class AuthService {
   async signup(body: CreateUserDto, req: any) {
     if (req.user) {
       throw new BadRequestException(
-        this.i18n.t('common.authService.ALREADY_LOGGED_IN'),
+        await this.i18n.translate('auth.authService.ALREADY_LOGGED_IN'),
       );
     }
 
@@ -41,7 +41,7 @@ export class AuthService {
     const existingUser = users.find((user) => user.email == body.email);
     if (existingUser) {
       throw new BadRequestException(
-        this.i18n.t('common.authService.USER_ALREADY_EXISTS'),
+        await this.i18n.translate('auth.authService.USER_ALREADY_EXISTS'),
       );
     }
 
@@ -72,7 +72,7 @@ export class AuthService {
   async login(body: LoginDto, req: any) {
     if (req.user) {
       throw new BadRequestException(
-        this.i18n.t('common.authService.ALREADY_LOGGED_IN'),
+        await this.i18n.translate('auth.authService.ALREADY_LOGGED_IN'),
       );
     }
 
@@ -84,7 +84,7 @@ export class AuthService {
 
     if (hash.toString('hex') !== hashedPassword) {
       throw new BadRequestException(
-        this.i18n.t('common.authService.INVALID_CREDENTIALS'),
+        await this.i18n.translate('auth.authService.INVALID_CREDENTIALS'),
       );
     }
 

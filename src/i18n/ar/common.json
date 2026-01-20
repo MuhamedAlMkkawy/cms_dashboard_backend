@@ -1,0 +1,8 @@
+{
+  "authService": {
+    "USER_ALREADY_EXISTS": "المستخدم موجود بالفعل",
+    "INVALID_CREDENTIALS": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "ALREADY_LOGGED_IN": "أنت مسجل الدخول بالفعل",
+    "LOGOUT_SUCCESS": "تم تسجيل الخروج بنجاح"
+  }
+}

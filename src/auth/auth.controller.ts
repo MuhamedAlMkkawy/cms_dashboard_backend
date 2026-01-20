@@ -39,7 +39,7 @@ export class AuthController {
   @Post('logout')
   async logout() {
     return {
-      message: this.i18n.t('common.authService.LOGOUT_SUCCESS'),
+      message: await this.i18n.translate('auth.authService.LOGOUT_SUCCESS'),
       data: null,
     };
   }
