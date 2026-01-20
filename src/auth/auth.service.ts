@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/users/entities/users.entities';
 import { Repository } from 'typeorm';
@@ -9,6 +13,7 @@ import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/LoginDto.dto';
 import { UsersService } from 'src/users/users.service';
+import { I18nService } from 'nestjs-i18n';
 
 const scrypt = promisify(crypto.scrypt);
 @Injectable()
@@ -17,19 +22,27 @@ export class AuthService {
     @InjectRepository(Users)
     private usersRepo: Repository<Users>,
 
-
-    private usersService : UsersService,
+    private usersService: UsersService,
     private jwtService: JwtService,
+    private i18n: I18nService,
   ) {}
 
   // [ 1 ] Signup
-  async signup(body: CreateUserDto) {
+  async signup(body: CreateUserDto, req: any) {
+    if (req.user) {
+      throw new BadRequestException(
+        this.i18n.t('common.authService.ALREADY_LOGGED_IN'),
+      );
+    }
+
     // [ 1 ] Check if the user is found
     const users = await this.usersRepo.find();
-  
+
     const existingUser = users.find((user) => user.email == body.email);
     if (existingUser) {
-      throw new BadRequestException('User Already Exists');
+      throw new BadRequestException(
+        this.i18n.t('common.authService.USER_ALREADY_EXISTS'),
+      );
     }
 
     const userEmail = body.email;
@@ -56,15 +69,23 @@ export class AuthService {
   }
 
   // [ 2 ] Login
-  async login(body: LoginDto) {
-    const user = await this.usersService.getSingleUser(body.email)
+  async login(body: LoginDto, req: any) {
+    if (req.user) {
+      throw new BadRequestException(
+        this.i18n.t('common.authService.ALREADY_LOGGED_IN'),
+      );
+    }
+
+    const user = await this.usersService.getSingleUser(body.email);
 
     const [salt, hashedPassword] = user.password.split('.');
 
     const hash = (await scrypt(body.password, salt, 32)) as Buffer;
 
     if (hash.toString('hex') !== hashedPassword) {
-      throw new BadRequestException("Email / Password is'nt Correct");
+      throw new BadRequestException(
+        this.i18n.t('common.authService.INVALID_CREDENTIALS'),
+      );
     }
 
     return user;

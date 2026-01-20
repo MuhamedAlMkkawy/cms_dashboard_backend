@@ -17,6 +17,8 @@ import { AuthModule } from './auth/auth.module';
 import { Users } from './users/entities/users.entities';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from './guards/auth.guard';
+import { I18nModule, I18nJsonLoader } from 'nestjs-i18n';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -29,12 +31,15 @@ import { AuthGuard } from './guards/auth.guard';
       url: process.env.MONGO_URL,
       synchronize: true, // only for development
       autoLoadEntities: true,
-      entities: [
-        Projects,
-        Pages,
-        Components,
-        Users
-      ],
+      entities: [Projects, Pages, Components, Users],
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loader: I18nJsonLoader,
+      loaderOptions: {
+        path: join(__dirname, '/locales/'),
+        watch: true,
+      },
     }),
     ProjectsModule,
     PagesModule,
@@ -42,9 +47,9 @@ import { AuthGuard } from './guards/auth.guard';
     StatisticsModule,
     UsersModule,
     AuthModule,
-    JwtModule
+    JwtModule,
   ],
   controllers: [AppController, UploadsController],
-  providers: [AppService, AuthService , AuthGuard],
+  providers: [AppService, AuthService, AuthGuard],
 })
 export class AppModule {}

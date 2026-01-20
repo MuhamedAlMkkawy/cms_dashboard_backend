@@ -12,39 +12,34 @@ import { CreateUserDto } from './dtos/CreateUserDto.dto';
 import { LoginDto } from './dtos/LoginDto.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedWithFilesInterceptor.interceptor';
+import { I18nService } from 'nestjs-i18n';
 
 @Controller('/')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private i18n: I18nService,
+  ) {}
 
   // ===================== SIGNUP =====================
   @Post('signup')
   @UseInterceptors(AnyFilesInterceptor())
   async signup(@Body() body: CreateUserDto, @Req() req: any) {
-    if (req.user) {
-      throw new BadRequestException('You are already logged in');
-    }
-
-    return this.authService.signup(body);
+    return this.authService.signup(body, req);
   }
 
   // ===================== LOGIN =====================
   @Post('login')
   @UseInterceptors(FlatToNestedWithFilesInterceptor)
   async login(@Body() body: LoginDto, @Req() req: any) {
-    if (req.user) {
-      throw new BadRequestException('You are already logged in');
-    }
-
-    return this.authService.login(body);
+    return this.authService.login(body, req);
   }
 
   // ===================== LOGOUT =====================
   @Post('logout')
   async logout() {
-    // JWT logout is CLIENT-SIDE
     return {
-      message: 'Logged out successfully',
+      message: this.i18n.t('common.authService.LOGOUT_SUCCESS'),
       data: null,
     };
   }
