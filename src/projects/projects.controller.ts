@@ -72,7 +72,7 @@ const componentDtoMap = {
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,
-    private readonly i18n: I18nService,
+    private readonly i18n: I18nService, 
   ) {}
 
   // -------------------------------
