@@ -1,0 +1,20 @@
+import { AccordionFieldsDto } from "./fields/Accordion.dto";
+import { ButtonsFieldsDto } from "./fields/Buttons.dto";
+import { CardSliderDto } from "./fields/CardSliderDto.dto";
+import { CustomHtmlDto } from "./fields/CustomHtml.dto";
+import { LogoFieldsDto } from "./fields/LogoDto.dto";
+import { MenuContentDto } from "./fields/MenuDto.dto";
+import { SocialMediaFieldsDto } from "./fields/SocialFields.dto";
+import { TabsFieldsDto } from "./fields/TabsDto.dto";
+import { TimelineFieldsDto } from "./fields/Timeline.dto";
+export declare const componentDtoMap: {
+    logo: typeof LogoFieldsDto;
+    timeline: typeof TimelineFieldsDto;
+    'card-slider': typeof CardSliderDto;
+    'nav-menu': typeof MenuContentDto;
+    'custom-html': typeof CustomHtmlDto;
+    buttons: typeof ButtonsFieldsDto;
+    accordion: typeof AccordionFieldsDto;
+    'social-media': typeof SocialMediaFieldsDto;
+    tabs: typeof TabsFieldsDto;
+};
