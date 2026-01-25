@@ -48,7 +48,7 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
   });
 
-  // app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
 
   // Disable ETag generation
   // app.getHttpAdapter().getInstance().disable('etag');
