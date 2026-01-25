@@ -58,7 +58,14 @@ async function bootstrap() {
         maxAge: 24 * 60 * 60 * 1000,
     }));
     app.enableCors({
-        origin: true
+        origin: [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://cms.roqay.dev',
+        ],
+        credentials: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
     });
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     await app.listen(process.env.PORT ?? 3000);
