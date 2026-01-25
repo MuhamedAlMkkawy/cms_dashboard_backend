@@ -66,7 +66,6 @@ async function bootstrap() {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
     });
-    app.setGlobalPrefix('api');
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     await app.listen(process.env.PORT ?? 3000);
 }
