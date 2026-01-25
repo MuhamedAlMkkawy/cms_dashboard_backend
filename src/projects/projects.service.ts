@@ -65,7 +65,7 @@ export class ProjectsService {
 
     if (!project) {
       throw new NotFoundException(
-        await this.i18n.translate('projects.projectsService.PROJECT_NOT_FOUND'),
+        await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'),
       );
     }
 
@@ -111,14 +111,14 @@ export class ProjectsService {
 
     if (!project)
       throw new NotFoundException(
-        await this.i18n.translate('projects.projectsService.PROJECT_NOT_FOUND'),
+        await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'),
       );
 
     const newPage = new Pages();
     newPage.projectID = projectId;
     newPage.name =
       pageData.name ||
-      (await this.i18n.translate('projects.projectsService.UNTITLED_PAGE'));
+      (await this.i18n.translate('projects.service.UNTITLED_PAGE'));
     newPage.visible = pageData.visible ?? true;
     newPage.language = language;
     newPage.sections = [];
@@ -129,7 +129,7 @@ export class ProjectsService {
         name:
           secData.name ||
           (await this.i18n.translate(
-            'projects.projectsService.UNTITLED_SECTION',
+            'projects.service.UNTITLED_SECTION',
           )),
         visible: secData.visible ?? true,
         components: [],
@@ -145,7 +145,7 @@ export class ProjectsService {
         if (!targetComponent)
           throw new NotFoundException(
             await this.i18n.t(
-              'projects.projectsService.COMPONENT_TYPE_NOT_FOUND',
+              'projects.service.COMPONENT_TYPE_NOT_FOUND',
               {
                 args: { type: compData.type },
               },
@@ -189,7 +189,7 @@ export class ProjectsService {
     });
     if (!project)
       throw new NotFoundException(
-        await this.i18n.translate('projects.projectsService.PROJECT_NOT_FOUND'),
+        await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'),
       );
 
     const pageIndex = project.pages?.findIndex(
@@ -197,7 +197,7 @@ export class ProjectsService {
     );
     if (pageIndex === undefined || pageIndex === -1)
       throw new NotFoundException(
-        await this.i18n.translate('projects.projectsService.PAGE_NOT_FOUND'),
+        await this.i18n.translate('projects.service.PAGE_NOT_FOUND'),
       );
 
     const existingPage = project.pages[pageIndex];
@@ -205,7 +205,7 @@ export class ProjectsService {
     existingPage.name =
       pageData.name ||
       existingPage.name ||
-      (await this.i18n.translate('projects.projectsService.UNTITLED_PAGE'));
+      (await this.i18n.translate('projects.service.UNTITLED_PAGE'));
     existingPage.visible = pageData.visible ?? existingPage.visible;
     existingPage.language = language || existingPage.language;
 
@@ -217,7 +217,7 @@ export class ProjectsService {
         name:
           secData.name ||
           (await this.i18n.translate(
-            'projects.projectsService.UNTITLED_SECTION',
+            'projects.service.UNTITLED_SECTION',
           )),
         visible: secData.visible ?? true,
         components: [],
@@ -233,7 +233,7 @@ export class ProjectsService {
         if (!targetComponent)
           throw new NotFoundException(
             await this.i18n.t(
-              'projects.projectsService.COMPONENT_TYPE_NOT_FOUND',
+              'projects.service.COMPONENT_TYPE_NOT_FOUND',
               {
                 args: { type: compData.type },
               },
@@ -273,7 +273,7 @@ export class ProjectsService {
 
     if (!project) {
       throw new NotFoundException(
-        await this.i18n.translate('projects.projectsService.PROJECT_NOT_FOUND'),
+        await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'),
       );
     }
 
@@ -281,7 +281,7 @@ export class ProjectsService {
 
     return {
       message: await this.i18n.translate(
-        'projects.projectsService.PROJECT_DELETED_SUCCESS',
+        'projects.service.PROJECT_DELETED_SUCCESS',
       ),
       data: null,
     };

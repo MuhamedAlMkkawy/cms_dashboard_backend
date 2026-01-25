@@ -37,7 +37,9 @@ export class AuthGuard implements CanActivate {
         'Your session expired. Please login again.',
       );
     }
-
+    console.log('***************')
+    console.log(token)
+    console.log('***************')
     // Attach token to request for later validation
     request.token = token;
 

@@ -27,6 +27,7 @@ import {
   I18nMiddleware,
 } from 'nestjs-i18n';
 import { join } from 'path';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -68,7 +69,15 @@ import { join } from 'path';
     }),
   ],
   controllers: [AppController, UploadsController],
-  providers: [AppService, AuthService, AuthGuard],
+  providers: [
+    AppService,
+    AuthService,
+    AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard, // global application
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
