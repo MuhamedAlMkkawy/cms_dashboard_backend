@@ -65,7 +65,7 @@ async function bootstrap() {
         ],
         credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
+        allowedHeaders: 'Content-Type, Authorization, accept-language',
     });
     app.setGlobalPrefix('api');
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
