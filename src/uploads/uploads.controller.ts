@@ -5,10 +5,13 @@ import {
   UploadedFiles,
   BadRequestException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { UploadFile } from 'src/Decorators/UploadFile.decorator';
 
 @Controller('uploads')
 export class UploadsController {
+  constructor(private readonly configService: ConfigService) {}
+
   /**
    * Upload a single image/video
    * Returns the uploaded file path and original name inside `data`
@@ -18,9 +21,11 @@ export class UploadsController {
   uploadSingle(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No file uploaded');
 
+    const baseUrl = this.configService.get<string>('BASE_URL');
+    
     // return file info directly
     return {
-      path: `/${file.path.replace(/\\/g, '/')}`,
+      path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
       originalName: file.originalname,
     };
   }
@@ -39,9 +44,11 @@ export class UploadsController {
     if (!files || !files.length)
       throw new BadRequestException('No files uploaded');
 
+    const baseUrl = this.configService.get<string>('BASE_URL');
+
     return files.map((file) => ({
-      path: `/${file.path.replace(/\\/g, '/')}`,
+      path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
       originalName: file.originalname,
-    }))
+    }));
   }
 }
