@@ -39,13 +39,14 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: [
-      'http://localhost:3000', // Nuxt dev
-      'http://127.0.0.1:3000',
-    ],
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
+    origin: true
+    // [
+    //   'http://localhost:3000', // Nuxt dev
+    //   'http://127.0.0.1:3000',
+    // ],
+    // credentials: true,
+    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    // allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
   });
 
   // app.setGlobalPrefix('api');
