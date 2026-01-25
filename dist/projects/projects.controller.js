@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectsController = void 0;
 const FlatToNestedWithFilesInterceptor_interceptor_1 = require("../interceptors/FlatToNestedWithFilesInterceptor.interceptor");
@@ -111,7 +110,7 @@ let ProjectsController = class ProjectsController {
         if (!body) {
             throw new common_1.BadRequestException(await this.i18n.translate('projects.controller.NO_DATA_PROVIDED'));
         }
-        return this.projectsService.updatePageNested(projectId, pageId, language, body);
+        return this.projectsService.updatePageNested(projectId, pageId, body, language);
     }
     async deleteProject(id) {
         return this.projectsService.deleteProject(id);
@@ -195,6 +194,7 @@ exports.ProjectsController = ProjectsController = __decorate([
             cb(null, true);
         },
     }), FlatToNestedWithFilesInterceptor_interceptor_1.FlatToNestedWithFilesInterceptor),
-    __metadata("design:paramtypes", [typeof (_a = typeof projects_service_1.ProjectsService !== "undefined" && projects_service_1.ProjectsService) === "function" ? _a : Object, nestjs_i18n_1.I18nService])
+    __metadata("design:paramtypes", [projects_service_1.ProjectsService,
+        nestjs_i18n_1.I18nService])
 ], ProjectsController);
 //# sourceMappingURL=projects.controller.js.map

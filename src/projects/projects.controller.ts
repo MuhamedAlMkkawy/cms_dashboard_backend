@@ -216,8 +216,8 @@ export class ProjectsController {
     return this.projectsService.updatePageNested(
       projectId,
       pageId,
-      language,
       body,
+      language,
     );
   }
 

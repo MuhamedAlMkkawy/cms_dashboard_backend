@@ -76,6 +76,7 @@ export class ProjectsService {
       },
     });
 
+
     return {
       ...project,
       pages,
@@ -181,20 +182,18 @@ export class ProjectsService {
   async updatePageNested(
     projectId: string,
     pageId: string,
-    language: string,
     pageData: any,
+    language: string,
   ) {
-    const project = await this.projectsRepo.findOneBy({
-      _id: new ObjectId(projectId),
-    });
-    if (!project)
-      throw new NotFoundException(
-        await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'),
-      );
+    const project = await this.getProject(projectId , language);
+
+    console.log(project)
+
 
     const pageIndex = project.pages?.findIndex(
       (p) => p._id.toString() === pageId,
     );
+
     if (pageIndex === undefined || pageIndex === -1)
       throw new NotFoundException(
         await this.i18n.translate('projects.service.PAGE_NOT_FOUND'),

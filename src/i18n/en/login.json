@@ -1,0 +1,5 @@
+{
+  "LOGIN_REQUIRED": "You have to login first",
+  "INVALID_AUTH_FORMAT": "Invalid authorization format",
+  "SESSION_EXPIRED": "Your session expired. Please login again."
+}

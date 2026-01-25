@@ -4,45 +4,48 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  constructor(private readonly i18n: I18nService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    // Routes that don't require auth
     const openRoutes = ['/login', '/signup', '/change_password'];
-    if (openRoutes.some((route) => request.path.startsWith(route))) {
+
+    // 🌍 detect language (header → default en)
+    const lang = request.headers['accept-language']?.split(',')[0] || 'en';
+
+    // 🔓 Public routes
+    if (openRoutes.some((route) => request.path.endsWith(route))) {
       return true;
     }
 
-    // Get authorization header
     const authHeader = request.headers.authorization;
 
-    // If header is missing → force login
     if (!authHeader) {
-      throw new UnauthorizedException('You have to login first');
+      throw new UnauthorizedException(
+        await this.i18n.t('login.LOGIN_REQUIRED', { lang }),
+      );
     }
 
-    // Check format: Bearer <token>
     const [type, token] = authHeader.split(' ');
 
     if (type !== 'Bearer') {
-      throw new UnauthorizedException('Invalid authorization format');
-    }
-
-    // If token is missing → force login
-    if (!token) {
       throw new UnauthorizedException(
-        'Your session expired. Please login again.',
+        await this.i18n.t('login.INVALID_AUTH_FORMAT', { lang }),
       );
     }
-    console.log('***************')
-    console.log(token)
-    console.log('***************')
-    // Attach token to request for later validation
-    request.token = token;
 
-    return true; // allow access, token can be validated in your service
+    if (!token || token === 'null' || token === 'undefined') {
+      throw new UnauthorizedException(
+        await this.i18n.t('login.SESSION_EXPIRED', { lang }),
+      );
+    }
+
+    request.token = token;
+    return true;
   }
 }

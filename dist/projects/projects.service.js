@@ -124,12 +124,9 @@ let ProjectsService = class ProjectsService {
         await this.projectsRepo.save(project);
         return savedPage;
     }
-    async updatePageNested(projectId, pageId, language, pageData) {
-        const project = await this.projectsRepo.findOneBy({
-            _id: new mongodb_1.ObjectId(projectId),
-        });
-        if (!project)
-            throw new common_1.NotFoundException(await this.i18n.translate('projects.service.PROJECT_NOT_FOUND'));
+    async updatePageNested(projectId, pageId, pageData, language) {
+        const project = await this.getProject(projectId, language);
+        console.log(project);
         const pageIndex = project.pages?.findIndex((p) => p._id.toString() === pageId);
         if (pageIndex === undefined || pageIndex === -1)
             throw new common_1.NotFoundException(await this.i18n.translate('projects.service.PAGE_NOT_FOUND'));

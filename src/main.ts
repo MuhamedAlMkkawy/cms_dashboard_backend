@@ -27,8 +27,8 @@ async function bootstrap() {
   // To handle the responce depend on the language
   app.useGlobalInterceptors(new LanguageInterceptor());
 
-  app.useGlobalGuards(new AuthGuard());
-  // app.useGlobalGuards(new AuthGuard())
+  const authGuard = app.get(AuthGuard);
+  app.useGlobalGuards(authGuard); // app.useGlobalGuards(new AuthGuard())
 
   // TO MAKE THE APP USE THE COOKIE SESSIONS
   app.use(
@@ -39,11 +39,19 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: true,
+    origin: [
+      'http://localhost:3000', // Nuxt dev
+      'http://127.0.0.1:3000',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
   });
 
+  app.setGlobalPrefix('api');
+
   // Disable ETag generation
-  app.getHttpAdapter().getInstance().disable('etag');
+  // app.getHttpAdapter().getInstance().disable('etag');
 
   // Set cache control globally
   // app.use((req, res, next) => {

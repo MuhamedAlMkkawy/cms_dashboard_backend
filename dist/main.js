@@ -51,15 +51,22 @@ async function bootstrap() {
     }));
     app.useGlobalInterceptors(new response_interceptor_1.ResponseInterceptor());
     app.useGlobalInterceptors(new languageHandle_interceptor_1.LanguageInterceptor());
-    app.useGlobalGuards(new auth_guard_1.AuthGuard());
+    const authGuard = app.get(auth_guard_1.AuthGuard);
+    app.useGlobalGuards(authGuard);
     app.use(cookieSession({
         keys: ['user_token'],
         maxAge: 24 * 60 * 60 * 1000,
     }));
     app.enableCors({
-        origin: true,
+        origin: [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+        ],
+        credentials: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type, Authorization, accept-language, secretkey',
     });
-    app.getHttpAdapter().getInstance().disable('etag');
+    app.setGlobalPrefix('api');
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     await app.listen(process.env.PORT ?? 3000);
 }

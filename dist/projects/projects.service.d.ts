@@ -32,7 +32,7 @@ export declare class ProjectsService {
     createProject(data: any): Promise<Projects[]>;
     updateProject(id: string, project: UpdateProjectDto, language: string): Promise<any>;
     addPagesToProject(projectId: string, pageData: any, language: string): Promise<Pages>;
-    updatePageNested(projectId: string, pageId: string, language: string, pageData: any): Promise<Pages>;
+    updatePageNested(projectId: string, pageId: string, pageData: any, language: string): Promise<Pages>;
     deleteProject(id: string): Promise<{
         message: string;
         data: null;

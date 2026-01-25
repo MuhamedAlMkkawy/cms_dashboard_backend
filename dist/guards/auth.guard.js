@@ -5,36 +5,43 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
+const nestjs_i18n_1 = require("nestjs-i18n");
 let AuthGuard = class AuthGuard {
-    canActivate(context) {
+    i18n;
+    constructor(i18n) {
+        this.i18n = i18n;
+    }
+    async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const openRoutes = ['/login', '/signup', '/change_password'];
-        if (openRoutes.some((route) => request.path.startsWith(route))) {
+        const lang = request.headers['accept-language']?.split(',')[0] || 'en';
+        if (openRoutes.some((route) => request.path.endsWith(route))) {
             return true;
         }
         const authHeader = request.headers.authorization;
         if (!authHeader) {
-            throw new common_1.UnauthorizedException('You have to login first');
+            throw new common_1.UnauthorizedException(await this.i18n.t('login.LOGIN_REQUIRED', { lang }));
         }
         const [type, token] = authHeader.split(' ');
         if (type !== 'Bearer') {
-            throw new common_1.UnauthorizedException('Invalid authorization format');
+            throw new common_1.UnauthorizedException(await this.i18n.t('login.INVALID_AUTH_FORMAT', { lang }));
         }
-        if (!token) {
-            throw new common_1.UnauthorizedException('Your session expired. Please login again.');
+        if (!token || token === 'null' || token === 'undefined') {
+            throw new common_1.UnauthorizedException(await this.i18n.t('login.SESSION_EXPIRED', { lang }));
         }
-        console.log('***************');
-        console.log(token);
-        console.log('***************');
         request.token = token;
         return true;
     }
 };
 exports.AuthGuard = AuthGuard;
 exports.AuthGuard = AuthGuard = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [nestjs_i18n_1.I18nService])
 ], AuthGuard);
 //# sourceMappingURL=auth.guard.js.map
