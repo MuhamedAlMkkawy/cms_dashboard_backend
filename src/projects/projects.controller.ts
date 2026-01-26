@@ -52,7 +52,7 @@ const componentDtoMap = {
 @UseInterceptors(
   AnyFilesInterceptor({
     storage: diskStorage({
-      destination: `./uploads`,
+      destination: process.cwd() + '/uploads',
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         cb(null, uniqueSuffix + extname(file.originalname));
@@ -72,7 +72,7 @@ const componentDtoMap = {
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,
-    private readonly i18n: I18nService, 
+    private readonly i18n: I18nService,
   ) {}
 
   // -------------------------------

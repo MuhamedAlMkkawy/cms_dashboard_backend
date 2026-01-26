@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PagesService } from './pages.service';
 import { plainToClass } from 'class-transformer';
 import { CreatePageDto } from './dtos/CreatePage.dto';
@@ -14,10 +22,9 @@ import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedW
 @UseInterceptors(
   AnyFilesInterceptor({
     storage: diskStorage({
-      destination: `./uploads`,
+      destination: process.cwd() + '/uploads',
       filename: (req, file, cb) => {
-        const uniqueSuffix =
-          Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         cb(null, uniqueSuffix + extname(file.originalname));
       },
     }),
@@ -28,41 +35,33 @@ import { FlatToNestedWithFilesInterceptor } from 'src/interceptors/FlatToNestedW
       cb(null, true);
     },
   }),
-  FlatToNestedWithFilesInterceptor
+  FlatToNestedWithFilesInterceptor,
 )
 // @Serialize(PageResponseDto)
 export class PagesController {
-  constructor(
-    private pagesService : PagesService
-  ) {}
+  constructor(private pagesService: PagesService) {}
 
   // -------------------
   // GET Pages
   // -------------------
   @Get()
   async getAllPages() {
-    return await this.pagesService.getAllPages()
+    return await this.pagesService.getAllPages();
   }
-  
-  
-  
+
   // -------------------
   // GET Single Page
   // -------------------
   @Get('/:id')
-  async getSinglePage(@Param('id') id : string) {
-    return await this.pagesService.getSinglePage(id)
+  async getSinglePage(@Param('id') id: string) {
+    return await this.pagesService.getSinglePage(id);
   }
-  
-  
-  
+
   // -------------------
   // Delete Page
   // -------------------
   @Delete(':id')
-  async deletePage(@Param('id') id : string) {
-    return await this.pagesService.deletePage(id)
+  async deletePage(@Param('id') id: string) {
+    return await this.pagesService.deletePage(id);
   }
 }
-
-

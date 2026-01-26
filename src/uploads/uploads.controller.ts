@@ -25,7 +25,7 @@ export class UploadsController {
     
     // return file info directly
     return {
-      path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
+      path: `${process.cwd()}${file.path.replace(/\\/g, '/')}`,
       originalName: file.originalname,
     };
   }
@@ -47,7 +47,7 @@ export class UploadsController {
     const baseUrl = this.configService.get<string>('BASE_URL');
 
     return files.map((file) => ({
-      path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
+      path: `${process.cwd()}${file.path.replace(/\\/g, '/')}`,
       originalName: file.originalname,
     }));
   }

@@ -178,7 +178,7 @@ exports.ProjectsController = ProjectsController = __decorate([
     (0, common_1.Controller)('projects'),
     (0, common_1.UseInterceptors)((0, platform_express_1.AnyFilesInterceptor)({
         storage: (0, multer_1.diskStorage)({
-            destination: `./uploads`,
+            destination: process.cwd() + '/uploads',
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, uniqueSuffix + (0, path_1.extname)(file.originalname));
