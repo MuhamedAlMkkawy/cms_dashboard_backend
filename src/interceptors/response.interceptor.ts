@@ -33,11 +33,21 @@ export class ResponseInterceptor implements NestInterceptor {
     const page = parseInt(request.query.page, 10) || 1;
     const limit = parseInt(request.query.limit, 10) || 15;
 
-    // Messages dictionary
-    const messages = {
-      en: 'Data sent successfully',
-      ar: 'تم إرسال البيانات بنجاح',
+    // Messages dictionary based on HTTP method
+    const methodMessages = {
+      POST: { en: 'Data added successfully', ar: 'تم إضافة البيانات بنجاح' },
+      PATCH: { en: 'Data updated successfully', ar: 'تم تحديث البيانات بنجاح' },
+      DELETE: { en: 'Data deleted successfully', ar: 'تم حذف البيانات بنجاح' },
+      GET: { en: 'Data sent successfully', ar: 'تم إرسال البيانات بنجاح' },
+      DEFAULT: {
+        en: 'Operation completed successfully',
+        ar: 'تم تنفيذ العملية بنجاح',
+      },
     };
+
+    const httpMethod = request.method.toUpperCase();
+    const defaultMessage = methodMessages[httpMethod] || methodMessages.DEFAULT;
+    const message = defaultMessage[lang];
 
     return next.handle().pipe(
       map((data) => {
@@ -57,7 +67,7 @@ export class ResponseInterceptor implements NestInterceptor {
           return {
             statusCode: 200,
             status: 'success',
-            message: messages[lang],
+            message,
             data: paginatedData,
             pagination: {
               total_items: totalItems,
@@ -80,7 +90,7 @@ export class ResponseInterceptor implements NestInterceptor {
             status: 'success',
             message:
               typeof data.message === 'object'
-                ? data.message[lang] || messages[lang]
+                ? data.message[lang] || message
                 : data.message,
             data: data.data ?? undefined,
           };
@@ -90,7 +100,7 @@ export class ResponseInterceptor implements NestInterceptor {
         return {
           statusCode: 200,
           status: 'success',
-          message: messages[lang],
+          message,
           data: data ?? undefined,
         };
       }),
