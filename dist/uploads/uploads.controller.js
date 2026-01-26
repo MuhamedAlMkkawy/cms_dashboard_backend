@@ -26,7 +26,7 @@ let UploadsController = class UploadsController {
             throw new common_1.BadRequestException('No file uploaded');
         const baseUrl = this.configService.get('BASE_URL');
         return {
-            path: `${process.cwd()}${file.path.replace(/\\/g, '/')}`,
+            path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
             originalName: file.originalname,
         };
     }
@@ -35,7 +35,7 @@ let UploadsController = class UploadsController {
             throw new common_1.BadRequestException('No files uploaded');
         const baseUrl = this.configService.get('BASE_URL');
         return files.map((file) => ({
-            path: `${process.cwd()}${file.path.replace(/\\/g, '/')}`,
+            path: `${baseUrl}${file.path.replace(/\\/g, '/')}`,
             originalName: file.originalname,
         }));
     }
