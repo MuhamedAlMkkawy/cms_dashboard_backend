@@ -7,6 +7,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import * as express from 'express';
 import { join } from 'path';
+import * as bodyParser from 'body-parser';
+
+
 
 const cookieSession = require('cookie-session');
 
@@ -61,6 +64,9 @@ async function bootstrap() {
   //   res.setHeader('Expires', '0');
   //   next();
   // });
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   await app.listen(process.env.PORT ?? 3000);

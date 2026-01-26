@@ -41,6 +41,7 @@ const languageHandle_interceptor_1 = require("./interceptors/languageHandle.inte
 const auth_guard_1 = require("./guards/auth.guard");
 const express = __importStar(require("express"));
 const path_1 = require("path");
+const bodyParser = __importStar(require("body-parser"));
 const cookieSession = require('cookie-session');
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
@@ -68,6 +69,8 @@ async function bootstrap() {
         allowedHeaders: 'Content-Type, Authorization, accept-language',
     });
     app.setGlobalPrefix('api');
+    app.use(bodyParser.json({ limit: '50mb' }));
+    app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     await app.listen(process.env.PORT ?? 3000);
 }
