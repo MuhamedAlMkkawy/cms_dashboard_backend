@@ -52,10 +52,6 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePageDto.prototype, "visible", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], CreatePageDto.prototype, "projectID", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),

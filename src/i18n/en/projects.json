@@ -7,6 +7,7 @@
     "LANGUAGE_REQUIRED": "Language is required",
     "LANGUAGE_REQUIRED_GET": "The Language is Required....",
     "LANGUAGE_REQUIRED_ADD": "Language is Required....",
+    "PAGE_NOT_FOUND": "Page not found",
     "NO_DATA_TO_ADD": "No Data Found to add...",
     "NO_DATA_PROVIDED": "No data provided for update",
     "UNKNOWN_COMPONENT_TYPE": "Unknown component type: {type}"

@@ -27,7 +27,7 @@ __decorate([
 ], Pages.prototype, "_id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'json' }),
-    __metadata("design:type", Array)
+    __metadata("design:type", String)
 ], Pages.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

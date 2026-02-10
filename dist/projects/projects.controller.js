@@ -56,9 +56,16 @@ let ProjectsController = class ProjectsController {
         }
         return this.projectsService.getAllProjects(language);
     }
-    async getProject(id, language) {
+    async getProject(id, pageName, language) {
         if (!language) {
             throw new common_1.BadRequestException(await this.i18n.translate('projects.controller.LANGUAGE_REQUIRED'));
+        }
+        if (pageName) {
+            const page = await this.projectsService.getProjectPageByName(id, pageName, language);
+            if (!page) {
+                throw new common_1.NotFoundException(await this.i18n.translate('projects.controller.PAGE_NOT_FOUND'));
+            }
+            return page;
         }
         return this.projectsService.getProject(id, language);
     }
@@ -127,9 +134,10 @@ __decorate([
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Headers)('accept-language')),
+    __param(1, (0, common_1.Query)('pageName')),
+    __param(2, (0, common_1.Headers)('accept-language')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], ProjectsController.prototype, "getProject", null);
 __decorate([

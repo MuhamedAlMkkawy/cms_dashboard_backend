@@ -7,6 +7,7 @@
     "LANGUAGE_REQUIRED": "اللغة مطلوبة",
     "LANGUAGE_REQUIRED_GET": "اللغة مطلوبة....",
     "LANGUAGE_REQUIRED_ADD": "اللغة مطلوبة....",
+    "PAGE_NOT_FOUND": "الصفحة غير موجودة",
     "NO_DATA_TO_ADD": "لم يتم العثور على بيانات للإضافة...",
     "NO_DATA_PROVIDED": "لم يتم تقديم بيانات للتحديث",
     "UNKNOWN_COMPONENT_TYPE": "نوع المكون غير معروف: {type}"

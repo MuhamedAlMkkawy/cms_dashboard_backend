@@ -25,7 +25,7 @@ export interface Section {
 }
 export declare class Pages {
     _id: ObjectId;
-    name: string[];
+    name: string;
     visible: boolean;
     projectID: string;
     language: string;

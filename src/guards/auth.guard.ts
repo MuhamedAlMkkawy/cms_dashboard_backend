@@ -33,6 +33,7 @@ export class AuthGuard implements CanActivate {
 
     const [type, token] = authHeader.split(' ');
 
+
     if (type !== 'Bearer') {
       throw new UnauthorizedException(
         await this.i18n.t('login.INVALID_AUTH_FORMAT', { lang }),

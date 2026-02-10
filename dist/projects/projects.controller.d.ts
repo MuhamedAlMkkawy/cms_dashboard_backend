@@ -14,7 +14,7 @@ export declare class ProjectsController {
         visible: boolean;
         languages: string[];
     }[]>;
-    getProject(id: string, language: string): Promise<{
+    getProject(id: string, pageName: string, language: string): Promise<import("../pages/entities/pages.entities").Pages | {
         pages: import("../pages/entities/pages.entities").Pages[];
         _id: import("bson").ObjectId;
         logo: string;

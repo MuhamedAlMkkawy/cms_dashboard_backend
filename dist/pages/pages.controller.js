@@ -28,6 +28,9 @@ let PagesController = class PagesController {
     async getAllPages() {
         return await this.pagesService.getAllPages();
     }
+    async getProjectPages(id, language) {
+        return await this.pagesService.getAllProjectPages(id, language);
+    }
     async getSinglePage(id) {
         return await this.pagesService.getSinglePage(id);
     }
@@ -42,6 +45,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PagesController.prototype, "getAllPages", null);
+__decorate([
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], PagesController.prototype, "getProjectPages", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),

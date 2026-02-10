@@ -68,6 +68,15 @@ let ProjectsService = class ProjectsService {
             pages,
         };
     }
+    async getProjectPageByName(projectId, pageName, language) {
+        const project = await this.getProject(projectId, language);
+        if (!project || !Array.isArray(project.pages)) {
+            return null;
+        }
+        const normalizedPageName = pageName.trim().toLowerCase();
+        const page = project.pages.find((item) => item?.name?.toLowerCase() === normalizedPageName);
+        return page || null;
+    }
     async createProject(data) {
         const newProject = this.projectsRepo.create(data);
         return await this.projectsRepo.save(newProject);

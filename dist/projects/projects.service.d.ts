@@ -29,6 +29,7 @@ export declare class ProjectsService {
         visible: boolean;
         languages: string[];
     }>;
+    getProjectPageByName(projectId: string, pageName: string, language: string): Promise<Pages | null>;
     createProject(data: any): Promise<Projects[]>;
     updateProject(id: string, project: UpdateProjectDto, language: string): Promise<any>;
     addPagesToProject(projectId: string, pageData: any, language: string): Promise<Pages>;

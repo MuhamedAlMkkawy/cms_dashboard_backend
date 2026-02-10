@@ -76,12 +76,33 @@ export class ProjectsService {
       },
     });
 
-
     return {
       ...project,
       pages,
     };
   }
+  // ----------------------------------
+  // GET SINGLE PAGE FROM PROJECTS BY PAGE NAME
+  // ----------------------------------
+  async getProjectPageByName(
+    projectId: string,
+    pageName: string,
+    language: string,
+  ) {
+    const project = await this.getProject(projectId, language);
+
+    if (!project || !Array.isArray(project.pages)) {
+      return null;
+    }
+
+    const normalizedPageName = pageName.trim().toLowerCase();
+
+    const page = project.pages.find(
+      (item) => item?.name?.toLowerCase() === normalizedPageName,
+    );
+
+    return page || null;
+  } 
 
   // -------------------------------
   // CREATE PROJECT
@@ -129,9 +150,7 @@ export class ProjectsService {
         id: Math.ceil(Math.random() * 1e7),
         name:
           secData.name ||
-          (await this.i18n.translate(
-            'projects.service.UNTITLED_SECTION',
-          )),
+          (await this.i18n.translate('projects.service.UNTITLED_SECTION')),
         visible: secData.visible ?? true,
         components: [],
       };
@@ -145,12 +164,9 @@ export class ProjectsService {
 
         if (!targetComponent)
           throw new NotFoundException(
-            await this.i18n.t(
-              'projects.service.COMPONENT_TYPE_NOT_FOUND',
-              {
-                args: { type: compData.type },
-              },
-            ),
+            await this.i18n.t('projects.service.COMPONENT_TYPE_NOT_FOUND', {
+              args: { type: compData.type },
+            }),
           );
 
         const pageComponent: PageComponent = {
@@ -185,10 +201,9 @@ export class ProjectsService {
     pageData: any,
     language: string,
   ) {
-    const project = await this.getProject(projectId , language);
+    const project = await this.getProject(projectId, language);
 
-    console.log(project)
-
+    console.log(project);
 
     const pageIndex = project.pages?.findIndex(
       (p) => p._id.toString() === pageId,
@@ -215,9 +230,7 @@ export class ProjectsService {
         id: Math.ceil(Math.random() * 1e7),
         name:
           secData.name ||
-          (await this.i18n.translate(
-            'projects.service.UNTITLED_SECTION',
-          )),
+          (await this.i18n.translate('projects.service.UNTITLED_SECTION')),
         visible: secData.visible ?? true,
         components: [],
       };
@@ -231,12 +244,9 @@ export class ProjectsService {
 
         if (!targetComponent)
           throw new NotFoundException(
-            await this.i18n.t(
-              'projects.service.COMPONENT_TYPE_NOT_FOUND',
-              {
-                args: { type: compData.type },
-              },
-            ),
+            await this.i18n.t('projects.service.COMPONENT_TYPE_NOT_FOUND', {
+              args: { type: compData.type },
+            }),
           );
 
         const pageComponent: PageComponent = {

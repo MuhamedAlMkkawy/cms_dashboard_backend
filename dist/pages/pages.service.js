@@ -32,6 +32,21 @@ let PagesService = class PagesService {
         }
         return pages;
     }
+    async getAllProjectPages(id, language) {
+        const whereCondition = {
+            projectID: id,
+        };
+        if (language) {
+            whereCondition.language = language;
+        }
+        const pages = await this.repo.find({
+            where: whereCondition,
+        });
+        if (!pages.length) {
+            throw new common_1.NotFoundException(await this.i18n.translate('pages.pagesService.NO_PAGES_FOUND'));
+        }
+        return pages;
+    }
     async getSinglePage(id) {
         const pages = await this.getAllPages();
         const page = pages.find((page) => page._id.toString() === id);

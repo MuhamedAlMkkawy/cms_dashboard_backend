@@ -30,6 +30,32 @@ export class PagesService {
     return pages;
   }
 
+  // --------------------
+  // GET PROJECT Pages
+  // --------------------
+  async getAllProjectPages(id: number, language?: string) {
+    const whereCondition: any = {
+      projectID: id,
+    };
+
+    // Optional: filter by language if provided
+    if (language) {
+      whereCondition.language = language;
+    }
+
+    const pages = await this.repo.find({
+      where: whereCondition,
+    });
+
+    if (!pages.length) {
+      throw new NotFoundException(
+        await this.i18n.translate('pages.pagesService.NO_PAGES_FOUND'),
+      );
+    }
+
+    return pages;
+  }
+
   // -------------------
   // GET Single Page
   // -------------------

@@ -31,7 +31,6 @@ export class CreatePageDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
   visible: string;
 
   @IsString()

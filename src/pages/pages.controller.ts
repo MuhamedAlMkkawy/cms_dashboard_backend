@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -47,6 +49,16 @@ export class PagesController {
   @Get()
   async getAllPages() {
     return await this.pagesService.getAllPages();
+  }
+  // -------------------
+  // GET Project Pages
+  // -------------------
+  @Get('/:id')
+  async getProjectPages(
+    @Param('id', ParseIntPipe) id: number,
+    @Headers('accept-language') language: string,
+  ) {
+    return await this.pagesService.getAllProjectPages(id, language);
   }
 
   // -------------------

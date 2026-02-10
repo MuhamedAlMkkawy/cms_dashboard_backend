@@ -90,11 +90,12 @@ export class ProjectsController {
   }
 
   // ----------------------------------
-  // GET SINGLE PROJECT
+  // GET SINGLE PROJECT OR PROJECT PAGE BY NAME
   // ----------------------------------
   @Get('/:id')
   async getProject(
     @Param('id') id: string,
+    @Query('pageName') pageName: string,
     @Headers('accept-language') language: string,
   ) {
     if (!language) {
@@ -103,6 +104,25 @@ export class ProjectsController {
       );
     }
 
+    // If pageName exists → return specific page
+    if (pageName) {
+      const page = await this.projectsService.getProjectPageByName(
+        id,
+        pageName,
+        language,
+      );
+      // console.log(pageName);
+
+      if (!page) {
+        throw new NotFoundException(
+          await this.i18n.translate('projects.controller.PAGE_NOT_FOUND'),
+        );
+      }
+
+      return page;
+    }
+
+    // Otherwise return full project
     return this.projectsService.getProject(id, language);
   }
 

@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ObjectId } from 'mongodb';
+import strict from 'node:assert/strict';
 import { Components } from 'src/components/entities/components.entities';
 
 export class PageResponseDto {
@@ -38,6 +39,7 @@ export class SectionResponseDto {
 
   @Expose()
   visible: boolean;
+
 
   /* ================= Components ================= */
 

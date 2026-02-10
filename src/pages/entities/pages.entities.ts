@@ -39,7 +39,7 @@ export interface Section {
   id: number;
   name: string;
   visible: boolean;
-  components: PageComponent[]; // ✅ مش Components[]
+  components: PageComponent[]; // مش Components[]
 }
 
 
@@ -50,7 +50,7 @@ export class Pages {
   _id: ObjectId;
 
   @Column({ type: 'json' })
-  name: string[];
+  name: string;
 
   @Column()
   visible: boolean;

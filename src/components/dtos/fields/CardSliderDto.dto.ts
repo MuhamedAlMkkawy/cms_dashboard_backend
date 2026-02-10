@@ -12,12 +12,15 @@ export class CardSliderItemDto {
   file?: string; // file path
 
   @IsString()
+  @IsOptional()
   title?: string;
-
+  
   @IsString()
+  @IsOptional()
   text?: string;
-
+  
   @IsString()
+  @IsOptional()
   link?: string;
 }
 

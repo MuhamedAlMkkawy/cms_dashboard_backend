@@ -25,14 +25,17 @@ __decorate([
 ], CardSliderItemDto.prototype, "file", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CardSliderItemDto.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CardSliderItemDto.prototype, "text", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CardSliderItemDto.prototype, "link", void 0);
 class CardSliderDto {
