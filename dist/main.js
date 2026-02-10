@@ -63,6 +63,7 @@ async function bootstrap() {
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'https://cms.roqay.dev',
+            'https://schoolna.vercel.app/',
         ],
         credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
